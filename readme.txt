@@ -18,8 +18,8 @@ yt-dlp.exeはPATH設定するか動画をダウンロードするフォルダに
 このファイルは存在しなくてもエラーになりません
 
 # オプションファイルの例
-{'dl_dir': 'C:/nicovideo',
- 'yt_dlp_path': 'C:/tool/yt_dlp'}
+{'dl_dir': 'C:/nicovideo',            # 動画のダウンロードフォルダ
+ 'yt_dlp_path': 'C:/tool/yt_dlp.exe'} # yt_dlpの.exeへのパス
 
 nicozonから情報を抜いてるので仕様変更には強いはずです
 実際そこのコードは3年半前に書いたものですが今でも変更一切無しで動いています
