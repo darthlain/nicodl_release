@@ -20,8 +20,6 @@ def main():
 
     option = read_option()
 
-    print(option)
-
     if dl_dir == '':
         if option and option['dl_dir']:
             dl_dir = option['dl_dir']
