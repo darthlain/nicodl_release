@@ -1,4 +1,4 @@
-import sys, os, re, time, random
+import sys, os, re, time, random, json
 from msvcrt import getch
 
 import requests, pyperclip
@@ -45,6 +45,10 @@ def main():
 
 
 
+    print()
+    print('yt_dlp_path = %s' % yt_dlp_path)
+    print('dl_dir      = %s' % dl_dir)
+    print()
 
     print('全部で%s件' % len(a))
     print()
@@ -71,7 +75,7 @@ def read_option():
     a = os.path.join(os.path.dirname(__file__), "nicodl_option.txt")
     if os.path.exists(a):
         with open(a) as f:
-            return eval(f.read())
+            return json.load(f)
 
 
 
