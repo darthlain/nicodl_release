@@ -23,7 +23,7 @@ def main():
 
     if dl_dir == '':
         if option and option['dl_dir']:
-            dl_dir = option['dl_dir']
+            dl_dir = Path(option['dl_dir'])
         else:
             dl_dir = Path(sys.argv[0]).parent
 
@@ -56,7 +56,7 @@ def main():
     print('全部で%s件' % len(a))
     print()
 
-    os.chdir(dl_dir)
+    os.chdir(str(dl_dir))
 
     for i in a:
         os.system(str(yt_dlp_path) + ' ' + i)
