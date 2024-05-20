@@ -1,5 +1,6 @@
-import sys, os, re, time, random, json
+import sys, os, re, time, random, json, shutil
 from msvcrt import getch
+from pathlib import Path
 
 import requests, pyperclip
 from bs4 import BeautifulSoup as bs
@@ -24,13 +25,15 @@ def main():
         if option and option['dl_dir']:
             dl_dir = option['dl_dir']
         else:
-            dl_dir = os.path.dirname(__file__)
+            dl_dir = Path(sys.argv[0]).parent
 
     if yt_dlp_path == '':
         if option and option['yt_dlp_path']:
             yt_dlp_path = option['yt_dlp_path']
-        else:
+        elif shutil.which('yt-dlp'):
             yt_dlp_path = 'yt-dlp'
+        else:
+            yt_dlp_path = dl_dir / 'yt-dlp'
 
     if ('nicovideo.jp/watch' in url):
         a = [url]
@@ -56,7 +59,7 @@ def main():
     os.chdir(dl_dir)
 
     for i in a:
-        os.system(yt_dlp_path + ' ' + i)
+        os.system(str(yt_dlp_path) + ' ' + i)
         time.sleep(15 + random.random())
 
     print()
@@ -72,7 +75,7 @@ def main():
 
 
 def read_option():
-    a = os.path.join(os.path.dirname(__file__), "nicodl_option.txt")
+    a = os.path.join(Path(sys.argv[0]).parent, "nicodl_option.txt")
     if os.path.exists(a):
         with open(a) as f:
             return json.load(f)
