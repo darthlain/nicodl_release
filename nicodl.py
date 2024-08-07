@@ -37,6 +37,8 @@ def main():
 
     if ('nicovideo.jp/watch' in url):
         a = [url]
+    elif re.findall(r'user/\d+/mylist', url):
+        a = fetch_nicozon_mylist_ids(url)
     else:
         a = fetch_nicozon_user_ids(url)
 
@@ -60,7 +62,7 @@ def main():
 
     for i in a:
         os.system(str(yt_dlp_path) + ' ' + i)
-        time.sleep(15 + random.random())
+        time.sleep(7.5 + random.random())
 
     print()
     print('全部で%s件 終了' % len(a))
@@ -103,12 +105,12 @@ def identity(x):
 # 数が一つの場合それを、複数の場合最初の(preposition)の次の数を返す
 def extract_id(s, preposition):
     s = str(s)
-    a = re.findall('\d+', s)
+    a = re.findall(r'\d+', s)
     if len(a) >= 2:
         n = re.search(preposition, s).end()
         if n == -1:
             raise '想定外の文字列です'
-        a = re.findall('\d+', s[n:])
+        a = re.findall(r'\d+', s[n:])
     return a[0]
 
 # 番号を受け取ってURLに変換する
@@ -143,7 +145,7 @@ def fetch(s, s2url, soup_navigate, fn = lambda d: print(d['url']), endfn = ident
 
 def fetch_allpage(
         s, fetch_1page, loopfn = lambda d: print(d['url']), endfn = identity,
-        waitnumfn = lambda: 2 + random.random()):
+        waitnumfn = lambda: 0.5):
     ret = list()
     ret.append(fetch_1page(s, 1))
     page = 1
