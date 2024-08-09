@@ -62,7 +62,7 @@ def main():
 
     for i in a:
         os.system(str(yt_dlp_path) + ' ' + i)
-        time.sleep(7.5 + random.random())
+        time.sleep(15 + random.random())
 
     print()
     print('全部で%s件 終了' % len(a))
@@ -145,7 +145,7 @@ def fetch(s, s2url, soup_navigate, fn = lambda d: print(d['url']), endfn = ident
 
 def fetch_allpage(
         s, fetch_1page, loopfn = lambda d: print(d['url']), endfn = identity,
-        waitnumfn = lambda: 0.5):
+        waitnumfn = lambda: 2):
     ret = list()
     ret.append(fetch_1page(s, 1))
     page = 1
