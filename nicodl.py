@@ -1,4 +1,4 @@
-import sys, os, re, time, random, json, shutil
+import sys, os, re, time, random, json, shutil, traceback
 from msvcrt import getch
 from pathlib import Path
 
@@ -10,39 +10,40 @@ from bs4 import BeautifulSoup as bs
 
 def main():
     # セッティング
-    dl_dir = ''
-    yt_dlp_path = ''
+    try:
+        dl_dir = ''
+        yt_dlp_path = ''
 
-    if len(sys.argv) >= 2:
-        url = sys.argv[1]
-    else:
-        print('URL?: ', end = '')
-        url = input()
-
-    option = read_option()
-
-    if dl_dir == '':
-        if option and option['dl_dir']:
-            dl_dir = Path(option['dl_dir'])
+        if len(sys.argv) >= 2:
+            url = sys.argv[1]
         else:
-            dl_dir = Path(sys.argv[0]).parent
+            print('URL?: ', end = '')
+            url = input()
 
-    if yt_dlp_path == '':
-        if option and option['yt_dlp_path']:
-            yt_dlp_path = option['yt_dlp_path']
-        elif shutil.which('yt-dlp'):
-            yt_dlp_path = 'yt-dlp'
+        option = read_option()
+
+        if dl_dir == '':
+            if option and option['dl_dir']:
+                dl_dir = Path(option['dl_dir'])
+            else:
+                dl_dir = Path(sys.argv[0]).parent
+
+        if yt_dlp_path == '':
+            if option and option['yt_dlp_path']:
+                yt_dlp_path = option['yt_dlp_path']
+            elif shutil.which('yt-dlp'):
+                yt_dlp_path = 'yt-dlp'
+            else:
+                yt_dlp_path = dl_dir / 'yt-dlp'
+
+        if ('nicovideo.jp/watch' in url):
+            a = [url]
+        elif re.findall(r'user/\d+/mylist', url):
+            a = fetch_nicozon_mylist_ids(url)
         else:
-            yt_dlp_path = dl_dir / 'yt-dlp'
+            a = fetch_nicozon_user_ids(url)
 
-    if ('nicovideo.jp/watch' in url):
-        a = [url]
-    elif re.findall(r'user/\d+/mylist', url):
-        a = fetch_nicozon_mylist_ids(url)
-    else:
-        a = fetch_nicozon_user_ids(url)
-
-    # セッティングここまで
+        # セッティングここまで
 
 
 
@@ -50,25 +51,30 @@ def main():
 
 
 
-    print()
-    print('yt_dlp_path = %s' % yt_dlp_path)
-    print('dl_dir      = %s' % dl_dir)
-    print()
+        print()
+        print('yt_dlp_path = %s' % yt_dlp_path)
+        print('dl_dir      = %s' % dl_dir)
+        print()
 
-    print('全部で%s件' % len(a))
-    print()
+        print('全部で%s件' % len(a))
+        print()
 
-    os.chdir(str(dl_dir))
+        os.chdir(str(dl_dir))
 
-    for i in a:
-        os.system(str(yt_dlp_path) + ' ' + i)
-        time.sleep(15 + random.random())
+        for i in a:
+            os.system(str(yt_dlp_path) + ' ' + i)
+            time.sleep(15 + random.random())
 
-    print()
-    print('全部で%s件 終了' % len(a))
+        print()
+        print('全部で%s件 終了' % len(a))
 
-    print('press any key...')
-    getch()
+        print('press any key...')
+        getch()
+
+    except:
+        traceback.print_exc()
+        print('press any key...')
+        getch()
 
 
 
