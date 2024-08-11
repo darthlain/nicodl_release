@@ -1,2 +1,5 @@
-{"dl_dir": "",
- "yt_dlp_path": ""}
+{
+"dl_dir": "",
+"yt_dlp_path": "",
+"end_presswait": "true"
+}

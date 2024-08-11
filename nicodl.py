@@ -13,6 +13,7 @@ def main():
     try:
         dl_dir = ''
         yt_dlp_path = ''
+        end_presswait = ''
 
         if len(sys.argv) >= 2:
             url = sys.argv[1]
@@ -23,18 +24,24 @@ def main():
         option = read_option()
 
         if dl_dir == '':
-            if option and option['dl_dir']:
+            if option and option.get('dl_dir'):
                 dl_dir = Path(option['dl_dir'])
             else:
                 dl_dir = Path(sys.argv[0]).parent
 
         if yt_dlp_path == '':
-            if option and option['yt_dlp_path']:
+            if option and option.get('yt_dlp_path'):
                 yt_dlp_path = option['yt_dlp_path']
             elif shutil.which('yt-dlp'):
                 yt_dlp_path = 'yt-dlp'
             else:
                 yt_dlp_path = dl_dir / 'yt-dlp'
+
+        if end_presswait == '':
+            if option and option.get('end_presswait'):
+                end_presswait = option['end_presswait']
+            else:
+                end_presswait = 'true'
 
         if ('nicovideo.jp/watch' in url):
             a = [url]
@@ -54,6 +61,7 @@ def main():
         print()
         print('yt_dlp_path = %s' % yt_dlp_path)
         print('dl_dir      = %s' % dl_dir)
+        print('end_presswait = %s' % end_presswait)
         print()
 
         print('全部で%s件' % len(a))
@@ -68,13 +76,16 @@ def main():
         print()
         print('全部で%s件 終了' % len(a))
 
-        print('press any key...')
-        getch()
+        if end_presswait == 'true':
+            print('press any key...')
+            getch()
 
     except:
         traceback.print_exc()
-        print('press any key...')
-        getch()
+
+        if end_presswait == 'true':
+            print('press any key...')
+            getch()
 
 
 
