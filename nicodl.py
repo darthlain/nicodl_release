@@ -67,6 +67,9 @@ def main():
     print()
     print('全部で%s件 終了' % len(a))
 
+    print('press any key...')
+    getch()
+
 
 
 
