@@ -77,7 +77,7 @@ def main():
 
 
 def read_option():
-    a = os.path.join(Path(sys.argv[0]).parent, "nicodl_option.txt")
+    a = os.path.join(Path(sys.argv[0]).parent, "nicodl_option.json")
     if os.path.exists(a):
         with open(a) as f:
             return json.load(f)
