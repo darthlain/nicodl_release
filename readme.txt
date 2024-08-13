@@ -32,7 +32,7 @@ yt-dlp.exeはPATH設定するか動画をダウンロードするフォルダに
 {
 "dl_dir": "C:/nicovideo",            # 動画のダウンロードフォルダ
 "yt_dlp_path": "C:/tool/yt_dlp.exe", # yt_dlpの.exeへのパス
-"end_presswait": "true"              # 完了後にキー待ちをしないようにする bool値
+"end_presswait": "true"              # 完了後にキー待ちをする bool値
 }
 
 bool値はtrueかfalseでyes noの意味になります

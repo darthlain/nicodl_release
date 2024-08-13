@@ -9,8 +9,9 @@ from bs4 import BeautifulSoup as bs
 # nicodl 動画のURL or マイリス or 投稿動画
 
 def main():
-    # セッティング
     try:
+        # セッティング
+        # .pyファイルを使う場合はここで設定を書いてもOKです
         dl_dir = ''
         yt_dlp_path = ''
         end_presswait = ''
