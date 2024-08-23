@@ -46,6 +46,8 @@ def main():
 
         if ('nicovideo.jp/watch' in url):
             a = [url]
+        elif 'series' in url:
+            a = fetch_niconico_series_ids(url)
         elif re.findall(r'user/\d+/mylist', url):
             a = fetch_nicozon_mylist_ids(url)
         else:
@@ -234,6 +236,27 @@ def fetch_nicozon_user_ids(s):
 
 def fetch_allsite_user_ids(s):
     return fetch_nicolog_user_ids(s) + fetch_nicozon_user_ids(s)
+
+
+def niconico_series_s2url(s, page = 1):
+    a = id2url(extract_id(s, 'user'), 'https://www.nicovideo.jp/user/')
+    b = id2url(extract_id(s, 'series'), a + '/series/', '?page=' + str(page))
+    return b
+
+def fetch_niconico_series_ids(s):
+    def f(s, page = 1):
+        aa = niconico_series_s2url(s, page)
+        a = fetch_soup(aa)
+        b = a.body.find_all(id='js-initial-userpage-data')[0]
+        c = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
+        d = list(set(c))
+        dd = ['https://www.nicovideo.jp/watch/' + i for i in d]
+        e = dict()
+        e['url'] = aa
+        e['ids'] = dd
+        return e;
+
+    return fetch_allpage(s, f, endfn = take_ids)
 #
 
 
