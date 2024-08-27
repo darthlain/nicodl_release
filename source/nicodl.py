@@ -123,6 +123,7 @@ def download_douga_prompt(option):
             else:
                 urls += make_urls(url)
         except:
+            traceback.print_exc()
             print('入力ミスかも')
 
         urls = list(set(urls))
@@ -145,6 +146,7 @@ def download_douga_clipboard_prompt(option):
             else:
                 urls += make_urls(url)
         except:
+            traceback.print_exc()
             print('入力ミスかも')
 
         urls = list(set(urls))

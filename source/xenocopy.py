@@ -1,4 +1,4 @@
-import imports
+from imports import *
 
 def identity(x):
     return x
