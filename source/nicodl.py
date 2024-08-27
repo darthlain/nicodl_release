@@ -108,6 +108,15 @@ def make_urls(url):
     else:
         return fetch_nicozon_user_ids(url)
 
+def list_remove_duplicates(lst):
+    a = []
+
+    for i in lst:
+        if not i in a:
+            a.append(i)
+
+    return a
+
 def download_douga_prompt(option):
     print()
     print('動画/投稿動画一覧/マイリスト/シリーズのURLを入力してください')
@@ -126,7 +135,7 @@ def download_douga_prompt(option):
             traceback.print_exc()
             print('入力ミスかも')
 
-        urls = list(set(urls))
+        urls = list_remove_duplicates(urls)
         print('動画数: %d' % len(urls))
 
     download_douga_main(urls, option)
@@ -149,7 +158,7 @@ def download_douga_clipboard_prompt(option):
             traceback.print_exc()
             print('入力ミスかも')
 
-        urls = list(set(urls))
+        urls = list_remove_duplicates(urls)
         print('動画数: %d' % len(urls))
 
     download_douga_main(urls, option)
@@ -176,7 +185,7 @@ def folderscan_main(p, option):
         for j in idheads:
             ids += re.findall(j + r"\d+", i)
 
-    ids = list(set(ids))
+    urls = list_remove_duplicates(urls)
 
     urls = ["https://www.nicovideo.jp/watch/" + i for i in ids]
 
@@ -190,6 +199,8 @@ def folderscan_main(p, option):
 
         if (i != urls[-1]):
             time.sleep(15)
+
+    print('終了 動画数: %d' % len(urls))
 
 if __name__ == '__main__':
     main()
