@@ -1,5 +1,5 @@
 from imports import *
-from nicodl import *
+from utility import *
 
 def identity(x):
     return x
@@ -129,8 +129,11 @@ def fetch_niconico_series_ids(s):
         aa = niconico_series_s2url(s, page)
         a = fetch_soup(aa)
         b = a.body.find_all(id='js-initial-userpage-data')[0]
-        c = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
-        d = list_remove_duplicates(d)
+        c  = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
+        # &quot;変換する関数作ったほうが良さそう
+        c2 = re.findall(r'(?<=&quot;id&quot;:&quot;)[a-zA-Z]+\d+', str(b))
+        c3 = c + c2
+        d = list_remove_duplicates(c3)
         dd = ['https://www.nicovideo.jp/watch/' + i for i in d]
         e = dict()
         e['url'] = aa

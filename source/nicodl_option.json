@@ -1,6 +1,8 @@
 {
 "dl_dir": "",
 "yt_dlp_path": "",
+"comment_mail": "",
+"comment_pass": "",
 "end_presswait": "",
 "is_video": "",
 "is_comment": "",

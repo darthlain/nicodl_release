@@ -24,6 +24,12 @@ def make_option():
         else:
             a['yt_dlp_path'] = yt_dlp
 
+    if not a.get('comment_mail'):
+        a['comment_mail'] = ''
+
+    if not a.get('comment_pass'):
+        a['comment_pass'] = ''
+
     if not a.get('end_presswait'):
         a['end_presswait'] = 'true'
 

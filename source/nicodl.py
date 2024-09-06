@@ -1,7 +1,8 @@
 from imports import *
-from comment import *
 from option import *
 from xenocopy import *
+from comment import *
+from utility import *
 
 # 仕様
 # nicodl 動画のURL or マイリス or 投稿動画
@@ -10,14 +11,14 @@ def main():
     option = make_option()
 
     try:
-        print()
         print('yt_dlp_path = %s' % option['yt_dlp_path'])
         print('dl_dir      = %s' % option['dl_dir'])
+        print('comment_mail = %s' % option['comment_mail'])
+        print('comment_pass = %s' % option['comment_pass'])
         print('end_presswait = %s' % option['end_presswait'])
         print('is_video = %s' % option['is_video'])
         print('is_comment = %s' % option['is_comment'])
         print('comment_fileformat = %s' % option['comment_fileformat'])
-        print()
 
         os.chdir(str(option['dl_dir']))
         download(option);
@@ -62,12 +63,14 @@ def download_douga_main(urls, option):
             try:
                 os.system(str(option['yt_dlp_path']) + ' ' + i)
             except:
+                traceback.print_exc()
                 print('動画DL失敗 %s' % i)
 
         if (option['is_comment'] == 'true'):
             try:
-                fetch_comment(i).save_xml(option)
+                comment_dl(i, option)
             except:
+                traceback.print_exc()
                 print('コメントDL失敗 %s' % i)
 
         if (i != urls[-1]):
@@ -83,7 +86,6 @@ def download(option):
         print('[z] (動画コメント)ダウンロード クリップボード監視')
         print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
         print('[0] 終了')
-        print()
         key = getch()
 
         if (key == b'a'):
@@ -107,15 +109,6 @@ def make_urls(url):
         return fetch_nicozon_mylist_ids(url)
     else:
         return fetch_nicozon_user_ids(url)
-
-def list_remove_duplicates(lst):
-    a = []
-
-    for i in lst:
-        if not i in a:
-            a.append(i)
-
-    return a
 
 def download_douga_prompt(option):
     print()
@@ -193,8 +186,9 @@ def folderscan_main(p, option):
 
     for i in urls:
         try:
-            fetch_comment(i).save_xml(option)
+            comment_dl(i, option)
         except:
+            traceback.print_exc()
             print('失敗 %s' % i)
 
         if (i != urls[-1]):
