@@ -1,4 +1,4 @@
-import sys, os, re, time, random, json, shutil, traceback, glob
+import sys, os, re, time, random, json, shutil, traceback, glob, html
 from datetime import datetime, timezone, timedelta
 from msvcrt import getch
 from pathlib import Path

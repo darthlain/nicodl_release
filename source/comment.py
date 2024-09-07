@@ -62,15 +62,20 @@ class Comment2:
         self.url = url
         self.title = b.find('meta', attrs={'property': 'og:title'})['content']
 
-        find_ids_owner1 = re.findall(r'\{"id":(\d+),"fork":\d+,"forkLabel":"owner', str(b))
-        find_ids_main1  = re.findall(r'\{"id":(\d+),"fork":\d+,"forkLabel":"main', str(b))
-        find_ids_easy1  = re.findall(r'\{"id":(\d+),"fork":\d+,"forkLabel":"easy', str(b))
-        find_key1 = re.findall(r'"threadKey":"(eyJ0eXAiOiJKV1Qi.*?)"', str(b))
+        owner_str = r'\{"id":(\d+),"fork":\d+,"forkLabel":"owner'
+        main_str  = r'\{"id":(\d+),"fork":\d+,"forkLabel":"main'
+        easy_str  = r'\{"id":(\d+),"fork":\d+,"forkLabel":"easy'
+        key_str   = r'"threadKey":"(eyJ0eXAiOiJKV1Qi.*?)"'
 
-        find_ids_owner2 = re.findall(r'\{&quot;id&quot;:(\d+),&quot;fork&quot;:\d+,&quot;forkLabel&quot;:&quot;owner', str(b))
-        find_ids_main2  = re.findall(r'\{&quot;id&quot;:(\d+),&quot;fork&quot;:\d+,&quot;forkLabel&quot;:&quot;main', str(b))
-        find_ids_easy2  = re.findall(r'\{&quot;id&quot;:(\d+),&quot;fork&quot;:\d+,&quot;forkLabel&quot;:&quot;easy', str(b))
-        find_key2 = re.findall(r'&quot;threadKey&quot;:&quot;(eyJ0eXAiOiJKV1Qi.*?)&quot;', str(b))
+        find_ids_owner1 = re.findall(owner_str, str(b))
+        find_ids_main1  = re.findall(main_str, str(b))
+        find_ids_easy1  = re.findall(easy_str, str(b))
+        find_key1       = re.findall(key_str, str(b))
+
+        find_ids_owner2 = re.findall(html.escape(owner_str), str(b))
+        find_ids_main2  = re.findall(html.escape(main_str), str(b))
+        find_ids_easy2  = re.findall(html.escape(easy_str), str(b))
+        find_key2       = re.findall(html.escape(key_str), str(b))
 
         self.id_owner = (find_ids_owner1 + find_ids_owner2)[0]
         self.id_main = (find_ids_main1 + find_ids_main2)[0]

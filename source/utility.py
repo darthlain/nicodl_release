@@ -25,6 +25,8 @@ def win_forbidden_name_replace(s):
     s = s.replace('|', '｜')
     return s
 
+# リストの重複しているところを切り捨てる
+# list(set(a)) だと並びがめちゃくちゃになるので作った
 def list_remove_duplicates(lst):
     a = []
 
