@@ -51,7 +51,9 @@ def make_user_session(option):
         if check():
             return session
 
-    if not fetch_login_from_option(session, option):
+    b = fetch_login_from_option(session, option)
+
+    if not b:
         raise MakeUserSessionException('make_user_session: ログインに失敗しました')
         return
 
@@ -133,7 +135,6 @@ class MakeUserSessionException(Exception):
 # コメント取得 一回分
 # ログインしていない場合when指定するとエラーになる
 # 失敗するとFalseを返す
-# when指定した場合一回で取れるコメントは500固定だろうか
 def fetch_comment(session, id_owner, id_main, id_easy, key, when):
 
     params = make_params(id_owner, id_main, id_easy, key, when);
@@ -217,10 +218,6 @@ class Comments:
                 if not self.comments[self.fork_i(i, fetched_comment)][c.no()]:
                     self.comments[self.fork_i(i, fetched_comment)][c.no()] = c.xml()
 
-    def show(self, d):
-        for i in d.values():
-            print(i)
-
     # 全部のforkのコメントを一つのファイルに収めることを想定
     def xml(self, video_id, last = '\n'):
         s = ""
@@ -282,8 +279,6 @@ def fetch_all_comment_fork(i, session, comments, video_page):
                 w = next_time(0, b)
 
             time.sleep(5)
-
-        #print(b['data']['threads'][0]['comments'][0])
 
 # かんたんコメントを除く全取得
 def fetch_all_comment_not_kantan(session, video_page):
@@ -355,9 +350,6 @@ def make_params(ids_owner, ids_main, ids_easy, key, when):
             },
             "threadKey": key,
             #"force_184": "1",
-            #"additionals": {
-            #    "when": 1472730882
-            #},
         }
 
     if ids_owner:
@@ -384,6 +376,7 @@ def comment_dl(url, option):
         try:
             session = make_user_session(option)
         except MakeUserSessionException:
+            traceback.print_exc()
             print('エラー: user_sessionの取得に失敗しました')
             print('        オプションファイルのcomment_mailとcomment_passにユーザー名とパスワードを書いて下さい')
             print('        あるいは、過去ログが必要ない場合はis_kakologにfalseと書いて下さい')

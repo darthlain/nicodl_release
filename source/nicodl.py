@@ -4,9 +4,6 @@ from xenocopy import *
 from comment import *
 from utility import *
 
-# 仕様
-# nicodl 動画のURL or マイリス or 投稿動画
-
 def main():
     option = make_option()
 

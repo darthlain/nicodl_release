@@ -4,8 +4,10 @@ from imports import *
 debug = False
 
 yt_dlp = 'yt-dlp'
-option_path = os.path.join(Path(sys.argv[0]).parent, "nicodl_option.json")
-user_session_path = os.path.join(Path(sys.argv[0]).parent, "nicodl_user_session.txt")
+option_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
+        "nicodl_option.json")
+user_session_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
+        "nicodl_user_session.txt")
 user_session = None
 
 def read_option():
@@ -18,12 +20,12 @@ def read_option():
 def read_user_session():
     if os.path.exists(user_session_path):
         with open(user_session_path, encoding = 'utf-8') as f:
-            print('user_session.txtを読み込みました')
-            return f.read()
+            print('nicodl_user_session.txtを読み込みました')
+            return f.read()[:-1]
 
 def write_user_session(a):
     with open(user_session_path, 'w', encoding = 'utf-8') as f:
-        print('user_session.txtに書き込みました')
+        print('nicodl_user_session.txtに書き込みました')
         f.write(a)
 
 
