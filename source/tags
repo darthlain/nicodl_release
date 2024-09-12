@@ -1,0 +1,151 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	C:/Users/user/OneDrive/script/nicodl_release/source/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/80ee839/
+Comment	./comment.py	/^class Comment:$/;"	c
+Comment1	./comment.py	/^class Comment1:$/;"	c
+Comment2	./soko.py	/^class Comment2:$/;"	c
+Comments	./comment.py	/^class Comments:$/;"	c
+FetchCommentException	./comment.py	/^class FetchCommentException(Exception):$/;"	c
+JST	./utility.py	/^JST = timezone(timedelta(hours=+9), 'JST')$/;"	v
+MakeUserSessionException	./comment.py	/^class MakeUserSessionException(Exception):$/;"	c
+Session	./soko.py	/^class Session:$/;"	c
+VideoPage	./comment.py	/^class VideoPage:$/;"	c
+__init__	./comment.py	/^    def __init__(self):$/;"	m	class:Comments
+__init__	./comment.py	/^    def __init__(self, arg=""):$/;"	m	class:FetchCommentException
+__init__	./comment.py	/^    def __init__(self, arg=""):$/;"	m	class:MakeUserSessionException
+__init__	./comment.py	/^    def __init__(self, d):$/;"	m	class:Comment1
+__init__	./comment.py	/^    def __init__(self, url, title, comdct):$/;"	m	class:Comment
+__init__	./comment.py	/^    def __init__(self, url, title, id_owner, id_main, id_easy, key):$/;"	m	class:VideoPage
+__init__	./soko.py	/^    def __init__(self):$/;"	m	class:Session
+a	./comment.py	/^    a = fetch_all_comment_not_kantan(session, url, vp)$/;"	v
+add	./comment.py	/^    def add(self, fetched_comment):$/;"	m	class:Comments
+body	./comment.py	/^    def body(self):$/;"	m	class:Comment1
+bs	./imports.py	/^from bs4 import BeautifulSoup as bs$/;"	x	nameref:unknown:BeautifulSoup
+check	./comment.py	/^    def check():$/;"	f	function:make_user_session	file:
+comment1	./comment.py	/^    def comment1(self, i, j):$/;"	m	class:Comment
+comment_dl	./comment.py	/^def comment_dl(url, option):$/;"	f
+comment_fileformat	./nicodl_option.json	/^"comment_fileformat": ""$/;"	s
+comment_mail	./nicodl_option.json	/^"comment_mail": "",$/;"	s
+comment_num	./comment.py	/^    def comment_num(self, i):$/;"	m	class:Comment
+comment_pass	./nicodl_option.json	/^"comment_pass": "",$/;"	s
+comment_type_num	./comment.py	/^    def comment_type_num(self):$/;"	m	class:Comment
+copy_ids	./xenocopy.py	/^def copy_ids(video_ids):$/;"	f
+date	./comment.py	/^    def date(self):$/;"	m	class:Comment1
+date1	./comment.py	/^    def date1(self, i, j):$/;"	m	class:Comment
+debug	./option.py	/^debug = True$/;"	v
+debug_option	./option.py	/^def debug_option(option):$/;"	f
+dl_dir	./nicodl_option.json	/^"dl_dir": "",$/;"	s
+download	./nicodl.py	/^def download(option):$/;"	f
+download_douga_clipboard_prompt	./nicodl.py	/^def download_douga_clipboard_prompt(option):$/;"	f
+download_douga_main	./nicodl.py	/^def download_douga_main(urls, option):$/;"	f
+download_douga_prompt	./nicodl.py	/^def download_douga_prompt(option):$/;"	f
+easys	./comment.py	/^    def easys(self):$/;"	m	class:Comments
+easys_num	./comment.py	/^    def easys_num(self):$/;"	m	class:Comments
+end_presswait	./nicodl_option.json	/^"end_presswait": "",$/;"	s
+extract_id	./xenocopy.py	/^def extract_id(s, preposition):$/;"	f
+f	./comment.py	/^        def f(a):$/;"	f	member:Comment.to_xml	file:
+f	./comment.py	/^        def f(a):$/;"	f	member:Comments.xml	file:
+f	./comment.py	/^        f = lambda w: fetch_comment(session, None, None, vp.id_easy, vp.key, w)$/;"	f	function:fetch_all_comment_fork	file:
+f	./comment.py	/^        f = lambda w: fetch_comment(session, None, vp.id_main, None, vp.key, w)$/;"	f	function:fetch_all_comment_fork	file:
+f	./comment.py	/^        f = lambda w: fetch_comment(session, vp.id_owner, None, None, vp.key, w)$/;"	f	function:fetch_all_comment_fork	file:
+f	./xenocopy.py	/^    def f(s, page = 1):$/;"	f	function:fetch_niconico_series_ids	file:
+fetch	./xenocopy.py	/^def fetch(s, s2url, soup_navigate, fn = lambda d: print(d['url']), endfn = identity):$/;"	f
+fetch_all_comment_fork	./comment.py	/^def fetch_all_comment_fork(i, session, url, comments, video_page):$/;"	f
+fetch_all_comment_not_kantan	./comment.py	/^def fetch_all_comment_not_kantan(session, url, video_page):$/;"	f
+fetch_allpage	./xenocopy.py	/^def fetch_allpage($/;"	f
+fetch_allsite_user_ids	./xenocopy.py	/^def fetch_allsite_user_ids(s):$/;"	f
+fetch_comment	./comment.py	/^def fetch_comment(session, id_owner, id_main, id_easy, key, when):$/;"	f
+fetch_comment_all	./soko.py	/^    def fetch_comment_all(self, url):$/;"	m	class:Comment2
+fetch_comment_from_video_page	./comment.py	/^def fetch_comment_from_video_page(session, video_page, when):$/;"	f
+fetch_comment_notall	./comment.py	/^def fetch_comment_notall(url):$/;"	f
+fetch_login	./comment.py	/^def fetch_login(session, mail, pass_):$/;"	f
+fetch_login_from_option	./comment.py	/^def fetch_login_from_option(session, option):$/;"	f
+fetch_nicolog_1page_ids	./xenocopy.py	/^def fetch_nicolog_1page_ids(s, page = 1):$/;"	f
+fetch_nicolog_user_ids	./xenocopy.py	/^def fetch_nicolog_user_ids(s):$/;"	f
+fetch_niconico_series_ids	./xenocopy.py	/^def fetch_niconico_series_ids(s):$/;"	f
+fetch_nicozon_1page_ids	./xenocopy.py	/^def fetch_nicozon_1page_ids(s, page = 1):$/;"	f
+fetch_nicozon_mylist_ids	./xenocopy.py	/^def fetch_nicozon_mylist_ids(s):$/;"	f
+fetch_nicozon_user_ids	./xenocopy.py	/^def fetch_nicozon_user_ids(s):$/;"	f
+fetch_prompt	./xenocopy.py	/^def fetch_prompt(fetch, printstr):$/;"	f
+fetch_soup	./xenocopy.py	/^def fetch_soup(url):$/;"	f
+fetch_video_page	./comment.py	/^def fetch_video_page(session, url):$/;"	f
+folderscan_main	./nicodl.py	/^def folderscan_main(p, option):$/;"	f
+folderscan_prompt	./nicodl.py	/^def folderscan_prompt(option):$/;"	f
+fork_i	./comment.py	/^    def fork_i(self, i, fetched_comment):$/;"	m	class:Comments
+forks	./comment.py	/^forks = ['owner', 'main', 'easy']$/;"	v
+get	./soko.py	/^    def get(self, *args, **kwargs):$/;"	m	class:Session
+id2url	./xenocopy.py	/^def id2url(num, before, after = ''):$/;"	f
+identity	./xenocopy.py	/^def identity(x):$/;"	f
+idheads	./nicodl.py	/^idheads = ['sm', 'nm', 'nl', 'so']$/;"	v
+is_comment	./nicodl_option.json	/^"is_comment": "",$/;"	s
+is_video	./nicodl_option.json	/^"is_video": "",$/;"	s
+last	./comment.py	/^    last = "\\n"$/;"	v	class:Comment
+list_remove_duplicates	./utility.py	/^def list_remove_duplicates(lst):$/;"	f
+login	./soko.py	/^    def login(self, mail, pass_):$/;"	m	class:Session
+mail	./comment.py	/^    def mail(self):$/;"	m	class:Comment1
+mail1	./comment.py	/^    def mail1(self, i, j):$/;"	m	class:Comment
+main	./nicodl.py	/^def main():$/;"	f
+main_prompt	./xenocopy.py	/^def main_prompt():$/;"	f
+mains	./comment.py	/^    def mains(self):$/;"	m	class:Comments
+mains_num	./comment.py	/^    def mains_num(self):$/;"	m	class:Comments
+make_headers	./comment.py	/^def make_headers():$/;"	f
+make_option	./option.py	/^def make_option():$/;"	f
+make_params	./comment.py	/^def make_params(ids_owner, ids_main, ids_easy, key, when):$/;"	f
+make_urls	./nicodl.py	/^def make_urls(url):$/;"	f
+make_user_session	./comment.py	/^def make_user_session(option):$/;"	f
+make_video_id	./comment.py	/^    def make_video_id(url):$/;"	m	class:VideoPage
+next_time	./comment.py	/^def next_time(i, fetched_comment):$/;"	f
+nicolog_soup_navigate	./xenocopy.py	/^def nicolog_soup_navigate(soup, i):$/;"	f
+nicolog_user_1page_s2url	./xenocopy.py	/^def nicolog_user_1page_s2url(s, page = 1):$/;"	f
+niconico_series_s2url	./xenocopy.py	/^def niconico_series_s2url(s, page = 1):$/;"	f
+nicozon_mylist_s2url	./xenocopy.py	/^def nicozon_mylist_s2url(s):$/;"	f
+nicozon_soup_navigate	./xenocopy.py	/^def nicozon_soup_navigate(soup, i):$/;"	f
+nicozon_user_1page_s2url	./xenocopy.py	/^def nicozon_user_1page_s2url(s, page = 1):$/;"	f
+no	./comment.py	/^    def no(self):$/;"	m	class:Comment1
+now_unixtime	./utility.py	/^def now_unixtime():$/;"	f
+option	./comment.py	/^    option = debug_option(make_option())$/;"	v
+option_path	./option.py	/^option_path = os.path.join(Path(sys.argv[0]).parent, "nicodl_option.json")$/;"	v
+option_show	./option.py	/^def option_show(option):$/;"	f
+owners	./comment.py	/^    def owners(self):$/;"	m	class:Comments
+owners_num	./comment.py	/^    def owners_num(self):$/;"	m	class:Comments
+post	./soko.py	/^    def post(self, *args, **kwargs):$/;"	m	class:Session
+prompt	./xenocopy.py	/^            prompt = lambda: fetch_prompt(fetch_allsite_user_ids, '投稿動画 URLかIDを入力/;"	f	function:main_prompt	file:
+prompt	./xenocopy.py	/^            prompt = lambda: fetch_prompt(fetch_nicolog_user_ids, '投稿動画(nicolog) URLかI/;"	f	function:main_prompt	file:
+prompt	./xenocopy.py	/^            prompt = lambda: fetch_prompt(fetch_nicozon_mylist_ids, 'マイリスト(nicozon) UR/;"	f	function:main_prompt	file:
+prompt	./xenocopy.py	/^            prompt = lambda: fetch_prompt(fetch_nicozon_user_ids, '投稿動画(nicozon) URLかI/;"	f	function:main_prompt	file:
+prompt	./xenocopy.py	/^            prompt = lambda: renban_prompt()$/;"	f	function:main_prompt	file:
+read_option	./option.py	/^def read_option():$/;"	f
+read_user_session	./option.py	/^def read_user_session():$/;"	f
+renban_prompt	./xenocopy.py	/^def renban_prompt():$/;"	f
+save_xml	./comment.py	/^    def save_xml(self, option):$/;"	m	class:Comment
+session	./comment.py	/^    session = make_user_session(option)$/;"	v
+show	./comment.py	/^    def show(self, d):$/;"	m	class:Comments
+take_ids	./xenocopy.py	/^def take_ids(fetchdata_s):$/;"	f
+threads	./comment.py	/^    def threads(self, fetched_comment):$/;"	m	class:Comments
+threads	./comment.py	/^def threads(fetched_comment):$/;"	f
+threads_len	./comment.py	/^    def threads_len(self, fetched_comment):$/;"	m	class:Comments
+to_xml	./comment.py	/^    def to_xml(self):$/;"	m	class:Comment
+update_comments_num	./comment.py	/^    def update_comments_num(self, fetched_comment):$/;"	m	class:Comments
+url	./comment.py	/^    url = 'https:\/\/www.nicovideo.jp\/watch\/sm32635158'$/;"	v
+user_session	./option.py	/^user_session = None$/;"	v
+user_session_path	./option.py	/^user_session_path = os.path.join(Path(sys.argv[0]).parent, "nicodl_user_session.txt")$/;"	v
+video_id	./comment.py	/^    def video_id(self):$/;"	m	class:Comment
+video_thread	./comment.py	/^    def video_thread(self):$/;"	m	class:Comment
+vp	./comment.py	/^    vp = fetch_video_page(session, url)$/;"	v
+vpos	./comment.py	/^    def vpos(self):$/;"	m	class:Comment1
+win_forbidden_name_replace	./utility.py	/^def win_forbidden_name_replace(s):$/;"	f
+write0	./utility.py	/^def write0(a):$/;"	f
+write_user_session	./option.py	/^def write_user_session(a):$/;"	f
+xml	./comment.py	/^    def xml(self):$/;"	m	class:Comment1
+xml	./comment.py	/^    def xml(self, video_id, last = '\\n'):$/;"	m	class:Comments
+xml1	./comment.py	/^    def xml1(self, i, j):$/;"	m	class:Comment
+yt_dlp	./option.py	/^yt_dlp = 'yt-dlp'$/;"	v
+yt_dlp_path	./nicodl_option.json	/^"yt_dlp_path": "",$/;"	s

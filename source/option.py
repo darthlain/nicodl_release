@@ -1,14 +1,31 @@
 from imports import *
 
+# デバッグモード 普段使用時にtrueになってはいけない
+debug = False
+
 yt_dlp = 'yt-dlp'
+option_path = os.path.join(Path(sys.argv[0]).parent, "nicodl_option.json")
+user_session_path = os.path.join(Path(sys.argv[0]).parent, "nicodl_user_session.txt")
+user_session = None
 
 def read_option():
-    a = os.path.join(Path(sys.argv[0]).parent, "nicodl_option.json")
-    if os.path.exists(a):
-        with open(a) as f:
+    if os.path.exists(option_path):
+        with open(option_path, encoding = 'utf-8') as f:
             return json.load(f)
     else:
         return dict()
+
+def read_user_session():
+    if os.path.exists(user_session_path):
+        with open(user_session_path, encoding = 'utf-8') as f:
+            print('user_session.txtを読み込みました')
+            return f.read()
+
+def write_user_session(a):
+    with open(user_session_path, 'w', encoding = 'utf-8') as f:
+        print('user_session.txtに書き込みました')
+        f.write(a)
+
 
 def make_option():
     a = read_option()
@@ -39,7 +56,27 @@ def make_option():
     if not a.get('is_comment'):
         a['is_comment'] = 'true'
 
+    if not a.get('is_kakolog'):
+        a['is_kakolog'] = 'true'
+
     if not a.get('comment_fileformat'):
         a['comment_fileformat'] = "*title* [*id*][*comment_num*コメ].xml"
 
     return a
+
+# python3.7以前だと並びがめちゃくちゃになると思う
+def option_show(option):
+    for i in option.items():
+        print('%s = %s' % (i[0], i[1]))
+
+def debug_option(option):
+    with open('F:/download/nicodl_debug.txt', 'r', encoding = 'utf-8') as f:
+        a = f.read().splitlines()
+
+    b = copy.copy(option)
+
+    b['dl_dir'] = Path(a[0])
+    b['comment_mail'] = a[1]
+    b['comment_pass'] = a[2]
+
+    return b

@@ -11,14 +11,14 @@ def main():
     option = make_option()
 
     try:
-        print('yt_dlp_path = %s' % option['yt_dlp_path'])
-        print('dl_dir      = %s' % option['dl_dir'])
-        print('comment_mail = %s' % option['comment_mail'])
-        print('comment_pass = %s' % option['comment_pass'])
-        print('end_presswait = %s' % option['end_presswait'])
-        print('is_video = %s' % option['is_video'])
-        print('is_comment = %s' % option['is_comment'])
-        print('comment_fileformat = %s' % option['comment_fileformat'])
+        if debug:
+            option = debug_option(option)
+
+        option_show(option)
+
+        if debug:
+            print()
+            print("*警告* デバッグモード")
 
         os.chdir(str(option['dl_dir']))
         download(option);
@@ -57,6 +57,8 @@ def main():
 #    download_main(urls, option)
 
 def download_douga_main(urls, option):
+    failed = []
+
     for i in urls:
 
         if (option['is_video'] == 'true'):
@@ -65,6 +67,7 @@ def download_douga_main(urls, option):
             except:
                 traceback.print_exc()
                 print('動画DL失敗 %s' % i)
+                failed.append(i)
 
         if (option['is_comment'] == 'true'):
             try:
@@ -72,12 +75,20 @@ def download_douga_main(urls, option):
             except:
                 traceback.print_exc()
                 print('コメントDL失敗 %s' % i)
+                failed.append(i)
 
         if (i != urls[-1]):
-            time.sleep(15 + random.random())
+            time.sleep(5)
     
     print()
     print('全部で%s件 終了' % len(urls))
+    print()
+    list_remove_duplicates(failed)
+
+    print('失敗したURL: %d件' % len(failed))
+
+    for i in failed:
+        print(i)
 
 def download(option):
     while 1:
@@ -173,14 +184,15 @@ def folderscan_prompt(option):
 def folderscan_main(p, option):
     a = glob.glob(str(Path(p) / "*"))
     ids = []
+    failed = []
 
     for i in a:
         for j in idheads:
             ids += re.findall(j + r"\d+", i)
 
-    urls = list_remove_duplicates(urls)
-
     urls = ["https://www.nicovideo.jp/watch/" + i for i in ids]
+
+    urls = list_remove_duplicates(urls)
 
     print('動画数: %d' % len(urls))
 
@@ -190,11 +202,18 @@ def folderscan_main(p, option):
         except:
             traceback.print_exc()
             print('失敗 %s' % i)
+            failed.append(i)
+
 
         if (i != urls[-1]):
-            time.sleep(15)
+            time.sleep(5)
 
     print('終了 動画数: %d' % len(urls))
+
+    print()
+    print('失敗したURL: %d件' % len(failed))
+    for i in failed:
+        print(i)
 
 if __name__ == '__main__':
     main()
