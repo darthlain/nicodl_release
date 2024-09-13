@@ -143,9 +143,6 @@ def fetch_comment(session, id_owner, id_main, id_easy, key, when):
     a = session.post("https://public.nvcomment.nicovideo.jp/v1/threads",
             json.dumps(params), headers=headers)
 
-    print(a.status_code)
-    print(session, id_owner, id_main, id_easy, key, when)
-
     if a.status_code != 200:
          raise FetchCommentException("fetch_comment: 失敗")
 
@@ -278,6 +275,7 @@ def fetch_all_comment_fork(i, session, option, comments, video_page):
             time.sleep(5)
 
             if miss >= 5:
+                print('[%s - %s] 5回以上失敗しました 終了' % (vp.video_id, vp.title))
                 break
 
             continue
