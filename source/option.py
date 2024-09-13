@@ -6,8 +6,13 @@ debug = False
 yt_dlp = 'yt-dlp'
 option_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
         "nicodl_option.json")
-user_session_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
-        "nicodl_user_session.txt")
+
+if debug:
+    user_session_path = 'F:/download/nicodl_user_session.txt'
+else:
+    user_session_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
+            "nicodl_user_session.txt")
+
 user_session = None
 
 def read_option():

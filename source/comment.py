@@ -143,6 +143,9 @@ def fetch_comment(session, id_owner, id_main, id_easy, key, when):
     a = session.post("https://public.nvcomment.nicovideo.jp/v1/threads",
             json.dumps(params), headers=headers)
 
+    print(a.status_code)
+    print(session, id_owner, id_main, id_easy, key, when)
+
     if a.status_code != 200:
          raise FetchCommentException("fetch_comment: 失敗")
 
@@ -247,8 +250,9 @@ def next_time(i, fetched_comment):
     return a.date()
 
 # fork毎の全取得
-def fetch_all_comment_fork(i, session, comments, video_page):
+def fetch_all_comment_fork(i, session, option, comments, video_page):
     vp = video_page
+    miss = 0
 
     if i == 0:
         f = lambda w: fetch_comment(session, vp.id_owner, None, None, vp.key, w)
@@ -263,7 +267,23 @@ def fetch_all_comment_fork(i, session, comments, video_page):
 
     while 1:
         print('[%s - %s] %s: %s' % (vp.video_id, vp.title, forks[i], w))
-        b = f(w)
+
+        try:
+            b = f(w)
+        except FetchCommentException:
+            # なぜか原因不明だが稀にやたら400になる動画がある
+            # sessionを新しいのにしたら大丈夫になる user_sessionは変えなくても大丈夫だった
+            session = make_user_session(option)
+            miss += 1
+            time.sleep(5)
+
+            if miss >= 5:
+                break
+
+            continue
+
+        miss = 0
+
 
         if (len(b['data']['threads'][0]['comments']) == 0):
             break
@@ -281,13 +301,13 @@ def fetch_all_comment_fork(i, session, comments, video_page):
             time.sleep(5)
 
 # かんたんコメントを除く全取得
-def fetch_all_comment_not_kantan(session, video_page):
+def fetch_all_comment_not_kantan(session, option, video_page):
     comments = Comments()
     vp = video_page
 
-    fetch_all_comment_fork(0, session, comments, vp)
+    fetch_all_comment_fork(0, session, option, comments, vp)
     time.sleep(5)
-    fetch_all_comment_fork(1, session, comments, vp)
+    fetch_all_comment_fork(1, session, option, comments, vp)
 
     return comments
 
@@ -383,7 +403,7 @@ def comment_dl(url, option):
             return
 
         vp = fetch_video_page(session, url)
-        comments = fetch_all_comment_not_kantan(session, vp)
+        comments = fetch_all_comment_not_kantan(session, option, vp)
 
     else:
         session = requests.session()
