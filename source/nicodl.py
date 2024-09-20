@@ -4,15 +4,28 @@ from xenocopy import *
 from comment import *
 from utility import *
 
+commentDL = None
+option = None
+
 def main():
-    option = make_option()
+    global commentDL, option
 
     try:
-        if debug:
-            option = debug_option(option)
+        commentDL = CommentDL(make_option())
 
-        option_show(option)
+        option = commentDL.option
 
+        if option['user_session']:
+            commentDL.set_user_session(option['user_session'])
+
+        version_show()
+        print()
+        option_show_safe(commentDL.option)
+
+        if commentDL.is_user_session():
+            print()
+            print('user_session.txt 読み込みました')
+        
         if debug:
             print()
             print("*警告* デバッグモード")
@@ -31,28 +44,6 @@ def main():
             print('press any key...')
             getch()
 
-# 前までの
-#def download_prompt(option):
-#    if len(sys.argv) >= 2:
-#        url = sys.argv[1]
-#    else:
-#        print('URL?: ', end = '')
-#        url = input()
-#
-#    if ('nicovideo.jp/watch' in url):
-#        urls = [url]
-#    elif 'series' in url:
-#        urls = fetch_niconico_series_ids(url)
-#    elif re.findall(r'user/\d+/mylist', url):
-#        urls = fetch_nicozon_mylist_ids(url)
-#    else:
-#        urls = fetch_nicozon_user_ids(url)
-#
-#    print('全部で%s件' % len(urls))
-#    print()
-#
-#    download_main(urls, option)
-
 def download_douga_main(urls, option):
     failed = []
 
@@ -67,12 +58,18 @@ def download_douga_main(urls, option):
                 failed.append(i)
 
         if (option['is_comment'] == 'true'):
+
             try:
-                comment_dl(i, option)
+                a = commentDL.comment_dl_from_option(i)
+
+                if a:
+                    a.save_xml()
+                else:
+                    failed.append(i)
+
             except:
                 traceback.print_exc()
-                print('コメントDL失敗 %s' % i)
-                failed.append(i)
+                print('不明なエラー: %s' % i)
 
         if (i != urls[-1]):
             time.sleep(5)
@@ -93,6 +90,9 @@ def download(option):
         print('[a] (動画コメント)ダウンロード')
         print('[z] (動画コメント)ダウンロード クリップボード監視')
         print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
+        print()
+        print('[r] comment_mail, comment_passを使ってログイン')
+        print('[q] ログインできているかどうか確認')
         print('[0] 終了')
         key = getch()
 
@@ -102,6 +102,37 @@ def download(option):
             download_douga_clipboard_prompt(option)
         elif (key == b's'):
             folderscan_prompt(option)
+        elif (key == b'q'):
+            try:
+                a = commentDL.is_user_session2()
+            except:
+                traceback.print_exc()
+                a = False
+
+            # '-' * 55
+            print()
+            print('-------------------------------------------------------')
+
+            if a:
+                print('[q]成功: ログインしています')
+            else:
+                print('[q]失敗: ログインしていません')
+
+            time.sleep(1)
+
+        elif (key == b'r'):
+            a = commentDL.make_user_session_login_option()
+
+            print()
+            print('-------------------------------------------------------')
+
+            if a:
+                print('[r]成功: ログインしました')
+            else:
+                print('[r]失敗: ログインできませんでした')
+
+            time.sleep(1)
+
         elif (key == b'0'):
             print('byebye')
             return
@@ -194,12 +225,18 @@ def folderscan_main(p, option):
     print('動画数: %d' % len(urls))
 
     for i in urls:
+
         try:
-            comment_dl(i, option)
+            a = commentDL.comment_dl_from_option(i)
+
+            if a:
+                a.save_xml()
+            else:
+                failed.append(i)
+
         except:
             traceback.print_exc()
-            print('失敗 %s' % i)
-            failed.append(i)
+            print('不明なエラー: %s' % i)
 
 
         if (i != urls[-1]):

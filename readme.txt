@@ -1,12 +1,21 @@
 ニコニコDLのためのツール
 動画DL部分はyt-dlpに完全に委託している
 
+2024/09/20
+・起動時のバージョン表示(日付)
+・is_kantanのオプション追加 かんたんコメントを取るかどうか デフォルトはfalse(無効)
+・起動時のcomment_mailとcomment_passに目隠し効果
+・ログイン処理をコマンドで手動でするようにしました
+・ログイン状態にあるかどうかを確認できるようにしました
+・nicodl_user_session.txtを廃止 nicodl_option.jsonに移りました
+・その他細かい修正
+
 2024/09/12
 コメント過去ログ取得に対応
 
 どうやら2段階認証設定しているとログインできないみたいです
 現状ではブラウザからF12でuser_sessionをコピーして
-nicodl_user_session.txtにコピーするのが良いと思います
+nicodl_option.jsonにコピーするのが良いと思います
 改行や空白を作ってはいけないので注意
 
 ひょっとしたら直さないかも めんどいので…
@@ -35,23 +44,39 @@ yt-dlp.exeはPATH設定するかexeと同じ場所に置くか設定にパスを
 {
 "dl_dir": "C:/nicovideo",            # 動画のダウンロードフォルダ
 "yt_dlp_path": "C:/tool/yt_dlp.exe", # yt-dlpの.exeへのパス yt-dlpのオプションもここに書いて下さい
-"comment_mail": ""                   # アカウントのメールアドレス
-"comment_pass": ""                   # アカウントのパスワード
+"comment_mail": "",                  # アカウントのメールアドレス
+"comment_pass": "",                  # アカウントのパスワード
+"user_session": "",                  # ブラウザから取得できるuser_session, mail passとはどちらかさえあればいい
+"is_video": "",                      # 動画をDLするかどうか
+"is_comment": "",                    # コメントをDLするかどうか (この設定はフォルダのファイルのIDを読み込むやつには適応されない)
+"is_kakolog": "true",                # 過去ログをDLするかどうか
+"is_kantan": "false",                # かんたんコメントをDLするかどうか
+"comment_fileformat": "*title* [*id*][*comment_num*コメ].xml", # コメントファイル名の書式
 "end_presswait": "true"              # 完了後にキー待ちをする bool値
-"is_video": ""                       # 動画をDLするかどうか
-"is_comment": ""                     # コメントをDLするかどうか (この設定はフォルダのファイルのIDを読み込むやつには適応されない)
-"is_kakolog": "true"                 # 過去ログをDLするかどうか
-"comment_fileformat": "*title* [*id*][*comment_num*コメ].xml" # コメントファイル名の書式
 }
 
-ファイルパスの¥(バックスラッシュまたは円記号)は/(スラッシュ)かバックスラッシュ2つに変換してください
+
+・ログイン方法は今のところ2つあり
+comment_mail comment_passを埋めて毎回コマンドでログインする方法
+ブラウザからuser_sessionを抜き出して使用する方法があります
+
+ブラウザのuser_sessionはいつ切れるかわかりませんが更新しなくてもかなり長い間使えるっぽいです
+(おそらくログアウトするまで？)
+
+mail passだと毎回ログインする必要があるらしいです
+
+user_sessionはnicovideo.jpページを開きログインした後F12を押してストレージやcookie等の欄にあると思いますが
+詳しくは [<ブラウザ名> F12 cookie] などで検索して下さい
+
+
+・ファイルパスの¥(バックスラッシュまたは円記号)は/(スラッシュ)かバックスラッシュ2つに変換してください
 jsonはバックスラッシュ1つだけだとエラーになります
 
-bool値はtrueかfalseでyes noの意味になります すべて小文字です
+・bool値はtrueかfalseでyes noの意味になります すべて小文字です
 
-何も書かなければデフォルトの良さげな設定になります
+・何も書かなければデフォルトの良さげな設定になります
 
-comment_mailとcomment_passはコメント取得にのみ適応されます
+・comment_mailとcomment_passはコメント取得にのみ適応されます
 もしプレミアムの動画をDLしたい場合はyt_dlp_pathに設定を書いて下さい
 オプションについては↓URLの[USAGE AND OPTIONS]参照
 例えばログインしたければ "yt_dlp_path": "yt-dlp -u メールアドレス -p パスワード"
@@ -59,11 +84,12 @@ comment_mailとcomment_passはコメント取得にのみ適応されます
 ・自分が使っているyt-dlp
 https://github.com/yt-dlp/yt-dlp
 
-過去ログDLは大量のコメントがある場合かなり遅くなります
+・過去ログDLは大量のコメントがある場合かなり遅くなります
 過去ログを取らない設定の場合は一回のPOSTで済むため非常に高速です
 
-ログインする場合exeと同じ場所にnicodl_user_session.txtというファイルが生成されます
-ここにuser_sessionを書いても一応ログイン処理できるはずです
+・コメント数と実際に取得されてるコメントの数が合わない場合
+大抵は削除されたコメントがあるか(これが結構かなりの数ある)
+かんたんコメントを取得するかどうかが関係しています
 
 
 ファイルを削除するようなコードは書かないようにしているのでそこは大丈夫だと思います

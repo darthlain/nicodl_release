@@ -26,57 +26,18 @@ from option  import *
 
 #-------------------------------------------------------------------------------
 
-# cookieにuser_sessionをつけたsessionを返す
-# nicodl_user_session.txtに保存されているもので試す →
-# fetch_loginでログイン処理 成功したらnicodl_user_session.txtに保存する →
-# いずれも失敗した場合エラー
-# sm9にアクセスしてチェックしてる 視聴履歴が汚染される
-def make_user_session(option):
-    session = requests.session()
-
-    def check():
-        url = 'https://www.nicovideo.jp/watch/sm9'
-        vp = fetch_video_page(session, url)
-        
-        try:
-            fetch_comment_from_video_page(session, vp, None)
-        except FetchCommentException:
-            return False
-        return True
-
-    a = read_user_session()
-
-    if a:
-        session.cookies.set('user_session', a)
-        if check():
-            return session
-
-    b = fetch_login_from_option(session, option)
-
-    if not b:
-        raise MakeUserSessionException('make_user_session: ログインに失敗しました')
-        return
-
-    if check():
-        write_user_session(session.cookies.get('user_session'))
-        return session
-
-    raise MakeUserSessionException('make_user_session: ログイン状態の取得に失敗しました')
-
-def fetch_login(session, mail, pass_):
-    url = 'https://account.nicovideo.jp/login/redirector?site=niconico'
-    param = {'mail': mail, 'next_url': '', 'password': pass_}
-    a = session.post(url, param, allow_redirects=False)
-
-    return 'user_session' in session.cookies
-
-def fetch_login_from_option(session, option):
-    return fetch_login(session, option['comment_mail'], option['comment_pass'])
+forks = ['owner', 'main', 'easy']
 
 # 動画ページを読み込む コメントID キー 動画タイトルなどを読み込む
 def fetch_video_page(session, url):
     
     a = session.get(url)
+    #print('[GET] %s' % url)
+
+    if a.status_code != 200:
+        print('エラー: %sを読み込めませんでした' % url)
+        return False
+
     b = bs(a.text, "html.parser")
     
     title = b.find('meta', attrs={'property': 'og:title'})['content']
@@ -103,6 +64,103 @@ def fetch_video_page(session, url):
 
     return VideoPage(url, title, id_owner, id_main, id_easy, key)
 
+# コメント取得 一回分
+# ログインしていない場合when指定するとエラーになる
+# 失敗するとFalseを返す
+def fetch_comment(session, id_owner, id_main, id_easy, key, when):
+
+    params = make_params(id_owner, id_main, id_easy, key, when);
+    headers = make_headers()
+
+    #print('[POST] https://public.nvcomment.nicovideo.jp/v1/threads')
+    a = session.post("https://public.nvcomment.nicovideo.jp/v1/threads",
+            json.dumps(params), headers=headers)
+
+    if a.status_code != 200:
+        return False
+
+    comment_dict = a.json()
+
+    return comment_dict
+
+def fetch_comment_from_video_page(session, video_page, when):
+    a = video_page
+    return fetch_comment(session, a.id_owner, a.id_main, a.id_easy, a.key, when)
+
+def threads(fetched_comment):
+    return fetched_comment['data']['threads']
+
+def next_time(i, fetched_comment):
+    a = Comment1(threads(fetched_comment)[i]['comments'][0])
+    return a.date()
+
+def make_params(ids_owner, ids_main, ids_easy, key, when):
+    a = { "params": {
+                "targets": [],
+                "language": "ja-jp"
+            },
+            "threadKey": key,
+            #"force_184": "1",
+        }
+
+    if ids_owner:
+        a["params"]["targets"] += [{ "id": ids_owner, "fork": "owner" }]
+
+    if ids_main:
+        a["params"]["targets"] += [{ "id": ids_main, "fork": "main" }]
+
+    if ids_easy:
+        a["params"]["targets"] += [{ "id": ids_easy, "fork": "easy" }]
+
+    if when:
+        a["additionals"] = { "when": when }
+
+    return a
+
+def make_headers():
+    a = {"x-frontend-id": "6"}
+    return a
+
+def save_xml(comments, video_page, option):
+    vp = video_page
+
+    # whileはファイル名かぶりの際の番号のため
+    n = 0
+
+    while 1:
+        a = option['comment_fileformat']
+        a = a.replace('*title*', vp.title)
+        a = a.replace('*id*', vp.video_id)
+        a = a.replace('*comment_num*', str(len(comments.owners) + len(comments.mains) + len(comments.easys)))
+        a = win_forbidden_name_replace(a)
+        a = str(option['dl_dir'] / a)
+
+        if n != 0:
+            b = os.path.splitext(a)
+            a = b[0] + ("(%d)" % n) + b[1]
+
+        if os.path.exists(a):
+            n += 1
+        else:
+            with open(a, "w", encoding = 'utf-8') as f:
+                print(a)
+                f.write(comments.xml(vp.video_id))
+                break
+
+class FetchCommentException(Exception):
+
+    def __init__(self, arg=""):
+        self.arg = arg
+
+class MakeUserSessionException(Exception):
+
+    def __init__(self, arg=""):
+        self.arg = arg
+
+# ------------------------------------------------------------------------------
+# ここからクラス
+
+
 # 動画再生ページのhtmlから取得できるデータ
 class VideoPage:
 
@@ -122,47 +180,15 @@ class VideoPage:
         else:
             return url[url.rfind('/') + 1:]
 
-class FetchCommentException(Exception):
-
-    def __init__(self, arg=""):
-        self.arg = arg
-
-class MakeUserSessionException(Exception):
-
-    def __init__(self, arg=""):
-        self.arg = arg
-
-# コメント取得 一回分
-# ログインしていない場合when指定するとエラーになる
-# 失敗するとFalseを返す
-def fetch_comment(session, id_owner, id_main, id_easy, key, when):
-
-    params = make_params(id_owner, id_main, id_easy, key, when);
-    headers = make_headers()
-
-    a = session.post("https://public.nvcomment.nicovideo.jp/v1/threads",
-            json.dumps(params), headers=headers)
-
-    if a.status_code != 200:
-         raise FetchCommentException("fetch_comment: 失敗")
-
-    comment_dict = a.json()
-
-    return comment_dict
-
-def fetch_comment_from_video_page(session, video_page, when):
-    a = video_page
-    return fetch_comment(session, a.id_owner, a.id_main, a.id_easy, a.key, when)
-
-forks = ['owner', 'main', 'easy']
-
 # fetch_commentしたコメントデータをこれに集める
 class Comments:
 
     # コメントデータのdictを取る
-    def __init__(self):
+    def __init__(self, video_page, option):
         # 投稿された全コメント数
         self.comments = [defaultdict(lambda: None) for i in range(3)]
+        self.video_page = video_page
+        self.option = option
 
         # fetchしたjsonにかかれてある全コメント数
         self.comments_num = [None for i in range(3)]
@@ -238,84 +264,8 @@ class Comments:
 
         return s
 
-
-def threads(fetched_comment):
-    return fetched_comment['data']['threads']
-
-def next_time(i, fetched_comment):
-    a = Comment1(threads(fetched_comment)[i]['comments'][0])
-    return a.date()
-
-# fork毎の全取得
-def fetch_all_comment_fork(i, session, option, comments, video_page):
-    vp = video_page
-    miss = 0
-
-    if i == 0:
-        f = lambda w: fetch_comment(session, vp.id_owner, None, None, vp.key, w)
-    elif i == 1:
-        f = lambda w: fetch_comment(session, None, vp.id_main, None, vp.key, w)
-    elif i == 2:
-        f = lambda w: fetch_comment(session, None, None, vp.id_easy, vp.key, w)
-    else:
-        raise Exception("fetch_all_comment_fork iエラー")
-
-    w = now_unixtime()
-
-    while 1:
-        print('[%s - %s] %s: %s' % (vp.video_id, vp.title, forks[i], w))
-
-        try:
-            b = f(w)
-        except FetchCommentException:
-            # なぜか原因不明だが稀にやたら400になる動画がある
-            # sessionを新しいのにしたら大丈夫になる user_sessionは変えなくても大丈夫だった
-            session = make_user_session(option)
-            miss += 1
-            time.sleep(5)
-
-            if miss >= 5:
-                print('[%s - %s] 5回以上失敗しました 終了' % (vp.video_id, vp.title))
-                break
-
-            continue
-
-        miss = 0
-
-
-        if (len(b['data']['threads'][0]['comments']) == 0):
-            break
-        else:
-            comments.add(b)
-
-            if w == next_time(0, b):
-                # comments[0]の時刻と現在時刻が一致した場合終了なのだが
-                # ココちょっと気になる
-                # なんか投稿者コメントの時刻おかしい？ 自動投稿なのか？
-                break
-            else:
-                w = next_time(0, b)
-
-            time.sleep(5)
-
-# かんたんコメントを除く全取得
-def fetch_all_comment_not_kantan(session, option, video_page):
-    comments = Comments()
-    vp = video_page
-
-    fetch_all_comment_fork(0, session, option, comments, vp)
-    time.sleep(5)
-    fetch_all_comment_fork(1, session, option, comments, vp)
-
-    return comments
-
-# 過去ログとかんたんコメントを取らない全取得
-def fetch_all_comment_not_kakolog_kantan(session, video_page):
-    comments = Comments()
-    vp = video_page
-    a = fetch_comment(session, vp.id_owner, vp.id_main, None, vp.key, None)
-    comments.add(a)
-    return comments
+    def save_xml(self):
+        save_xml(self, self.video_page, self.option)
 
 # コメント一つに対する処理
 class Comment1:
@@ -350,7 +300,7 @@ class Comment1:
         b = '<chat no="%s" user_id="%s" date="%s" nicoru="%s" score="%s" mail="%s" vpos="%s">%s</chat>' % (
                 a['no'],           # コメント番号
                 a['userId'],       # ユーザーID
-                self.date(),       # コメントが投稿されたUNIX時間(JST)
+                self.date(),       # コメントが投稿されたUNIX時間(JST固定)
                 a['nicoruCount'],  # ニコる回数
                 a['score'],        # たぶんフィルターに使うコメント評価
                 self.mail(),       # コマンド
@@ -360,82 +310,176 @@ class Comment1:
 
         return b
 
+# コメントDLのメインクラス的な
+class CommentDL:
 
-def make_params(ids_owner, ids_main, ids_easy, key, when):
-    a = { "params": {
-                "targets": [],
-                "language": "ja-jp"
-            },
-            "threadKey": key,
-            #"force_184": "1",
-        }
+    def __init__(self, option):
+        self.option = option
+        self.session = requests.session()
 
-    if ids_owner:
-        a["params"]["targets"] += [{ "id": ids_owner, "fork": "owner" }]
+    # sessionにuser_sessionがあるか確かめるだけ 実際に使えるかは確かめない
+    def is_user_session(self):
+        return self.get_user_session() != None
 
-    if ids_main:
-        a["params"]["targets"] += [{ "id": ids_main, "fork": "main" }]
+    def get_user_session(self):
+        return self.session.cookies.get('user_session')
 
-    if ids_easy:
-        a["params"]["targets"] += [{ "id": ids_easy, "fork": "easy" }]
+    def set_user_session(self, a):
+        return self.session.cookies.set('user_session', a)
 
-    if when:
-        a["additionals"] = { "when": when }
+    # sessionがログイン状態で使えるか確かめる sm9にアクセスする
+    def is_user_session2(self):
+        url = 'https://www.nicovideo.jp/watch/sm9'
+        vp = fetch_video_page(self.session, url)
 
-    return a
+        a = fetch_comment_from_video_page(self.session, vp, 1284887748)
 
-def make_headers():
-    a = {"x-frontend-id": "6"}
-    return a
+        return a != False
 
-def comment_dl(url, option):
+    # user_sessionをそのままにあたらしいsessionに入れ替える
+    # fetch_all_comment_forkの謎エラー用
+    def replace_session(self):
+        a = self.get_user_session()
 
-    if option['is_kakolog'] == 'true':
-        try:
-            session = make_user_session(option)
-        except MakeUserSessionException:
-            traceback.print_exc()
-            print('エラー: user_sessionの取得に失敗しました')
-            print('        オプションファイルのcomment_mailとcomment_passにユーザー名とパスワードを書いて下さい')
-            print('        あるいは、過去ログが必要ない場合はis_kakologにfalseと書いて下さい')
+        self.session = requests.session()
+
+        if a != None:
+            self.set_user_session(a)
+
+    # user_sessionをログインで取得する 2段階認証の対策はまだ
+    def make_user_session_login(self, mail, pass_):
+        url = 'https://account.nicovideo.jp/login/redirector?site=niconico'
+        param = {'mail': mail, 'next_url': '', 'password': pass_}
+        self.session = requests.session()
+
+        self.session.post(url, param, allow_redirects = False)
+
+        return 'user_session' in self.session.cookies
+
+    # optionからuser_sessionを読み取りログインする
+    def make_user_session_login_option(self):
+        if self.option['comment_mail'] and self.option['comment_pass']:
+
+            return self.make_user_session_login(
+                    self.option['comment_mail'], self.option['comment_pass'])
+
+        else:
+            return False
+
+    # nicodl_user_session.txtから読み取る
+    def make_user_session_txt(self):
+        a = read_user_session()
+
+        if a != None:
+            self.set_user_session(a)
+            return True
+        return False
+
+    # fork一つをすべてDLする 渡したcommentsに結果が返る
+    def fetch_all_comment_fork(self, i, comments, video_page):
+        vp = video_page
+        miss = 0
+
+        if i == 0:
+            f = lambda w: fetch_comment(self.session, vp.id_owner, None, None, vp.key, w)
+        elif i == 1:
+            f = lambda w: fetch_comment(self.session, None, vp.id_main, None, vp.key, w)
+        elif i == 2:
+            f = lambda w: fetch_comment(self.session, None, None, vp.id_easy, vp.key, w)
+        else:
+            return False
+
+        w = now_unixtime()
+
+        while 1:
+            print('[%s - %s] %s: %s' % (vp.video_id, vp.title, forks[i], w))
+
+            a = f(w)
+
+            if a == False:
+                # なぜか原因不明だが稀にやたら400になる動画がある
+                # sessionを新しいのにしたら大丈夫になる user_sessionは変えなくても大丈夫だった
+                self.replace_session()
+                miss += 1
+                time.sleep(5)
+
+                if miss >= 5:
+                    print('[%s - %s] 5回以上失敗しました 終了' % (vp.video_id, vp.title))
+                    return False
+
+                continue
+
+            miss = 0
+
+            if (len(a['data']['threads'][0]['comments']) == 0):
+                break
+            else:
+                comments.add(a)
+
+                if w == next_time(0, a):
+                    # comments[0]の時刻と現在時刻が一致した場合終了なのだが
+                    # ココちょっと気になる
+                    # なんか投稿者コメントの時刻おかしい？ 自動投稿なのか？
+                    return True
+                else:
+                    w = next_time(0, a)
+
+                time.sleep(5)
+
+    # 過去ログDLにはsessionに有効なuser_session cookieが適用されている必要がある
+    # 返り値はコメントが読み込まれたComments
+    def comment_dl(self, url, is_owner, is_main, is_easy, is_kakolog):
+
+        if is_kakolog and not self.is_user_session():
+            print('エラー: user_sessionが設定されていません')
             return
 
-        vp = fetch_video_page(session, url)
-        comments = fetch_all_comment_not_kantan(session, option, vp)
+        vp = fetch_video_page(self.session, url)
 
-    else:
-        session = requests.session()
-        vp = fetch_video_page(session, url)
-        comments = fetch_all_comment_not_kakolog_kantan(session, vp)
+        if vp == False:
+            return False
 
-    save_xml(comments, vp, option)
+        time.sleep(5)
+        comments = Comments(vp, self.option)
 
-def save_xml(comments, video_page, option):
-    vp = video_page
+        if is_kakolog:
 
-    # whileはファイル名かぶりの際の番号のため
-    n = 0
+            lst = []
+            if is_owner:
+                lst.append(0)
+            if is_main:
+                lst.append(1)
+            if is_easy:
+                lst.append(2)
 
-    while 1:
-        a = option['comment_fileformat']
-        a = a.replace('*title*', vp.title)
-        a = a.replace('*id*', vp.video_id)
-        a = a.replace('*comment_num*', str(len(comments.owners) + len(comments.mains)))
-        a = win_forbidden_name_replace(a)
-        a = str(option['dl_dir'] / a)
+            for i in lst:
+                a = self.fetch_all_comment_fork(i, comments, vp)
 
-        if n != 0:
-            b = os.path.splitext(a)
-            a = b[0] + ("(%d)" % n) + b[1]
+                if a == False:
+                    print('%s 失敗' % url)
+                    return
 
-        if os.path.exists(a):
-            n += 1
+                if lst[-1] != i:
+                    time.sleep(5)
+
+            return comments
+
         else:
-            with open(a, "w", encoding = 'utf-8') as f:
-                print(a)
-                f.write(comments.xml(vp.video_id))
-                break
+            a = fetch_comment(self.session, is_owner, is_main, is_easy, vp.key, None)
 
+            if a == False:
+                print('%s 失敗' % url)
+                return
+
+            comments.add(a)
+            return comments
+
+    # is_commentは考慮しない
+    def comment_dl_from_option(self, url):
+        is_kakolog = self.option['is_kakolog'] == 'true'
+        is_easy = self.option['is_kantan'] == 'true'
+
+        return self.comment_dl(url, True, True, is_easy, is_kakolog)
 
 if __name__ == '__main__':
     pass

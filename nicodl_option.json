@@ -3,9 +3,11 @@
 "yt_dlp_path": "",
 "comment_mail": "",
 "comment_pass": "",
-"end_presswait": "",
+"user_session": "",
 "is_video": "",
 "is_comment": "",
 "is_kakolog": "",
-"comment_fileformat": ""
+"is_kantan": "",
+"comment_fileformat": "",
+"end_presswait": ""
 }
