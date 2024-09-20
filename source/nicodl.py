@@ -33,14 +33,14 @@ def main():
         os.chdir(str(option['dl_dir']))
         download(option);
 
-        if option['end_presswait'] == 'true':
+        if option['end_presswait']:
             print('press any key...')
             getch()
 
     except:
         traceback.print_exc()
 
-        if option['end_presswait'] == 'true':
+        if option['end_presswait']:
             print('press any key...')
             getch()
 
@@ -49,7 +49,7 @@ def download_douga_main(urls, option):
 
     for i in urls:
 
-        if (option['is_video'] == 'true'):
+        if (option['is_video']):
             try:
                 os.system(str(option['yt_dlp_path']) + ' ' + i)
             except:
@@ -57,7 +57,7 @@ def download_douga_main(urls, option):
                 print('動画DL失敗 %s' % i)
                 failed.append(i)
 
-        if (option['is_comment'] == 'true'):
+        if (option['is_comment']):
 
             try:
                 a = commentDL.comment_dl_from_option(i)

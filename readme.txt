@@ -1,6 +1,9 @@
 ニコニコDLのためのツール
 動画DL部分はyt-dlpに完全に委託している
 
+2024/09/21
+・オプションのbool値関係の改善
+
 2024/09/20
 ・起動時のバージョン表示(日付)
 ・is_kantanのオプション追加 かんたんコメントを取るかどうか デフォルトはfalse(無効)
@@ -44,12 +47,12 @@ yt-dlp.exeはPATH設定するかexeと同じ場所に置くか設定にパスを
 "comment_mail": "",                  # アカウントのメールアドレス
 "comment_pass": "",                  # アカウントのパスワード
 "user_session": "",                  # ブラウザから取得できるuser_session, mail passとはどちらかさえあればいい
-"is_video": "",                      # 動画をDLするかどうか
-"is_comment": "",                    # コメントをDLするかどうか (この設定はフォルダのファイルのIDを読み込むやつには適応されない)
-"is_kakolog": "true",                # 過去ログをDLするかどうか
-"is_kantan": "false",                # かんたんコメントをDLするかどうか
+"is_video": "",                      # 動画をDLするかどうか bool
+"is_comment": "",                    # コメントをDLするかどうか (この設定はフォルダのファイルのIDを読み込むやつには適応されない) bool
+"is_kakolog": "true",                # 過去ログをDLするかどうか bool
+"is_kantan": "false",                # かんたんコメントをDLするかどうか bool
 "comment_fileformat": "*title* [*id*][*comment_num*コメ].xml", # コメントファイル名の書式
-"end_presswait": "true"              # 完了後にキー待ちをする bool値
+"end_presswait": "true"              # 完了後にキー待ちをする bool
 }
 
 
@@ -70,6 +73,7 @@ user_sessionはnicovideo.jpページを開きログインした後F12を押し�
 jsonはバックスラッシュ1つだけだとエラーになります
 
 ・bool値はtrueかfalseでyes noの意味になります すべて小文字です
+(型は文字列型でもboolean型でもOKです)
 
 ・何も書かなければデフォルトの良さげな設定になります
 

@@ -476,8 +476,8 @@ class CommentDL:
 
     # is_commentは考慮しない
     def comment_dl_from_option(self, url):
-        is_kakolog = self.option['is_kakolog'] == 'true'
-        is_easy = self.option['is_kantan'] == 'true'
+        is_kakolog = self.option['is_kakolog']
+        is_easy = self.option['is_kantan']
 
         return self.comment_dl(url, True, True, is_easy, is_kakolog)
 

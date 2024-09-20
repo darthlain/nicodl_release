@@ -2,7 +2,7 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2024-09-20'
+version = '2024-09-21'
 
 yt_dlp = 'yt-dlp'
 
@@ -36,6 +36,21 @@ def write_user_session(a):
         # print('nicodl_user_session.txtに書き込みました')
         f.write(a)
 
+def json_bool(d, key, default):
+    if d.get(key) is None or d[key] == '':
+        d[key] = default
+    elif isinstance(d.get(key), bool):
+        pass
+    elif d.get(key) == 'true':
+        d[key] = True
+    elif d.get(key) == 'True':
+        d[key] = True
+    elif d.get(key) == 'false':
+        d[key] = False
+    elif d.get(key) == 'False':
+        d[key] = False
+    else:
+        raise Exception('エラー: オプションファイルのbool値の設定が間違っています')
 
 def make_option():
     a = read_option()
@@ -60,23 +75,15 @@ def make_option():
     if not a.get('user_session'):
         a['user_session'] = ''
 
-    if not a.get('is_video'):
-        a['is_video'] = 'true'
-
-    if not a.get('is_comment'):
-        a['is_comment'] = 'true'
-
-    if not a.get('is_kakolog'):
-        a['is_kakolog'] = 'true'
-
-    if not a.get('is_kantan'):
-        a['is_kantan'] = 'false'
+    json_bool(a, 'is_video', True)
+    json_bool(a, 'is_comment', True)
+    json_bool(a, 'is_kakolog', True)
+    json_bool(a, 'is_kantan', False)
 
     if not a.get('comment_fileformat'):
         a['comment_fileformat'] = "*title* [*id*][*comment_num*コメ].xml"
 
-    if not a.get('end_presswait'):
-        a['end_presswait'] = 'true'
+    json_bool(a, 'end_presswait', True)
 
     return a
 
@@ -96,18 +103,6 @@ def option_show_safe(option):
 def version_show():
     s = 'NicoDL Version %s' % version
     print(s)
-
-#def debug_option(option):
-#    with open('F:/download/nicodl_debug.txt', 'r', encoding = 'utf-8') as f:
-#        a = f.read().splitlines()
-#
-#    b = copy.copy(option)
-#
-#    b['dl_dir'] = Path(a[0])
-#    b['comment_mail'] = a[1]
-#    b['comment_pass'] = a[2]
-#
-#    return b
 
 def debug_option2():
     return debug_option(make_option())
