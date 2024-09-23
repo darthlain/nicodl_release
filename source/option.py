@@ -2,7 +2,7 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2024-09-21'
+version = '2024-09-23'
 
 yt_dlp = 'yt-dlp'
 
@@ -15,8 +15,6 @@ else:
 
     option_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
             "nicodl_option.json")
-
-user_session = None
 
 def read_option():
     if os.path.exists(option_path):
@@ -35,6 +33,10 @@ def write_user_session(a):
     with open(user_session_path, 'w', encoding = 'utf-8') as f:
         # print('nicodl_user_session.txtに書き込みました')
         f.write(a)
+
+def json_str(d, key, default = ''):
+    if not d.get(key):
+        d[key] = default
 
 def json_bool(d, key, default):
     if d.get(key) is None or d[key] == '':
@@ -66,23 +68,16 @@ def make_option():
         else:
             a['yt_dlp_path'] = yt_dlp
 
-    if not a.get('comment_mail'):
-        a['comment_mail'] = ''
-
-    if not a.get('comment_pass'):
-        a['comment_pass'] = ''
-
-    if not a.get('user_session'):
-        a['user_session'] = ''
+    json_str(a, 'comment_mail')
+    json_str(a, 'comment_pass')
+    json_str(a, 'user_session')
 
     json_bool(a, 'is_video', True)
     json_bool(a, 'is_comment', True)
     json_bool(a, 'is_kakolog', True)
     json_bool(a, 'is_kantan', False)
 
-    if not a.get('comment_fileformat'):
-        a['comment_fileformat'] = "*title* [*id*][*comment_num*コメ].xml"
-
+    json_str(a, 'comment_fileformat', "*title* [*id*][*comment_num*コメ].xml")
     json_bool(a, 'end_presswait', True)
 
     return a
@@ -103,6 +98,3 @@ def option_show_safe(option):
 def version_show():
     s = 'NicoDL Version %s' % version
     print(s)
-
-def debug_option2():
-    return debug_option(make_option())

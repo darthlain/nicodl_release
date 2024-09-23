@@ -350,11 +350,15 @@ class CommentDL:
     def make_user_session_login(self, mail, pass_):
         url = 'https://account.nicovideo.jp/login/redirector?site=niconico'
         param = {'mail': mail, 'next_url': '', 'password': pass_}
-        self.session = requests.session()
+        session = requests.session()
 
-        self.session.post(url, param, allow_redirects = False)
+        session.post(url, param, allow_redirects = False)
 
-        return 'user_session' in self.session.cookies
+        if 'user_session' in session.cookies:
+            self.session = session
+            return True
+        else:
+            return False
 
     # optionからuser_sessionを読み取りログインする
     def make_user_session_login_option(self):

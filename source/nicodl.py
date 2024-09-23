@@ -146,13 +146,16 @@ def make_urls(url):
         return fetch_niconico_series_ids(url)
     elif re.findall(r'user/\d+/mylist', url):
         return fetch_nicozon_mylist_ids(url)
+    elif 'nicovideo.jp/mylist' in url:
+        return fetch_nicozon_mylist_ids(url)
     else:
         return fetch_nicozon_user_ids(url)
 
 def download_douga_prompt(option):
     print()
     print('動画/投稿動画一覧/マイリスト/シリーズのURLを入力してください')
-    print('入力が終了したら nico と入力して下さい')
+    print('コマンド一覧:')
+    print('    done [DL] / back [戻る] / clip [クリップボード監視]')
     urls = []
     while 1:
         print('> ', end = '')
