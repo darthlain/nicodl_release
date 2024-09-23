@@ -141,6 +141,26 @@ def fetch_niconico_series_ids(s):
         return e;
 
     return fetch_allpage(s, f, endfn = take_ids)
+
+# 公式動画のシリーズ
+def niconico_series_official_s2url(s):
+    return id2url(extract_id(s, 'series'), 'https://www.nicovideo.jp/series/')
+
+def fetch_niconico_series_official_ids(s):
+    class_ = 'NC-MediaObject NC-VideoMediaObject NC-VideoMediaObject_thumbnailWidth192 SeriesVideoListContainer-video'
+    form = r'(?<= href=").*(?=" rel=")'
+
+    aa = niconico_series_official_s2url(s)
+    print(aa)
+    a = fetch_soup(aa)
+    b = a.body.find_all(class_=class_)
+    acc = []
+
+    for i in b:
+        c = re.findall(form, str(i))
+        acc.append(c[0])
+
+    return acc
 #
 
 
@@ -196,4 +216,6 @@ def main_prompt():
             print('エラー やり直し')
             continue
 
-# main_prompt()
+if __name__ == '__main__':
+    #main_prompt()
+    pass

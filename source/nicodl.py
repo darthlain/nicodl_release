@@ -118,7 +118,7 @@ def download(option):
             else:
                 print('[q]失敗: ログインしていません')
 
-            time.sleep(1)
+            time.sleep(0.5)
 
         elif (key == b'r'):
             a = commentDL.make_user_session_login_option()
@@ -131,7 +131,7 @@ def download(option):
             else:
                 print('[r]失敗: ログインできませんでした')
 
-            time.sleep(1)
+            time.sleep(0.5)
 
         elif (key == b'0'):
             print('byebye')
@@ -142,6 +142,8 @@ def download(option):
 def make_urls(url):
     if ('nicovideo.jp/watch' in url):
         return [url]
+    elif 'nicovideo.jp/series' in url:
+        return fetch_niconico_series_official_ids(url)
     elif 'series' in url:
         return fetch_niconico_series_ids(url)
     elif re.findall(r'user/\d+/mylist', url):
@@ -154,8 +156,7 @@ def make_urls(url):
 def download_douga_prompt(option):
     print()
     print('動画/投稿動画一覧/マイリスト/シリーズのURLを入力してください')
-    print('コマンド一覧:')
-    print('    done [DL] / back [戻る] / clip [クリップボード監視]')
+    print('入力が終了したら nico と入力して下さい')
     urls = []
     while 1:
         print('> ', end = '')
