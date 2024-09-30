@@ -22,10 +22,6 @@ def main():
         print()
         option_show_safe(commentDL.option)
 
-        if commentDL.is_user_session():
-            print()
-            print('user_session.txt 読み込みました')
-        
         if debug:
             print()
             print("*警告* デバッグモード")
@@ -91,8 +87,11 @@ def download(option):
         print('[z] (動画コメント)ダウンロード クリップボード監視')
         print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
         print()
+        print('[d] 動画DL:     %s' % ['☓', '○'][int(option['is_video'])])
+        print('[c] コメントDL: %s' % ['☓', '○'][int(option['is_comment'])])
+        print()
         print('[r] comment_mail, comment_passを使ってログイン')
-        print('[q] ログインできているかどうか確認')
+        print('[q] ログイン状態確認')
         print('[0] 終了')
         key = getch()
 
@@ -102,6 +101,16 @@ def download(option):
             download_douga_clipboard_prompt(option)
         elif (key == b's'):
             folderscan_prompt(option)
+        elif (key == b'd'):
+            option['is_video'] = option['is_video'] == False
+            for i in range(5):
+                print()
+            print('-------------------------------------------------------')
+        elif (key == b'c'):
+            option['is_comment'] = option['is_comment'] == False
+            for i in range(5):
+                print()
+            print('-------------------------------------------------------')
         elif (key == b'q'):
             try:
                 a = commentDL.is_user_session2()
@@ -120,6 +129,9 @@ def download(option):
 
             time.sleep(0.5)
 
+            for i in range(5):
+                print()
+
         elif (key == b'r'):
             a = commentDL.make_user_session_login_option()
 
@@ -131,6 +143,9 @@ def download(option):
             else:
                 print('[r]失敗: ログインできませんでした')
 
+            for i in range(5):
+                print()
+
             time.sleep(0.5)
 
         elif (key == b'0'):
@@ -141,7 +156,7 @@ def download(option):
 
 def make_urls(url):
     if ('nicovideo.jp/watch' in url):
-        return [url]
+        return [url[0:url.index('?')]]
     elif 'nicovideo.jp/series' in url:
         return fetch_niconico_series_official_ids(url)
     elif 'series' in url:
@@ -203,15 +218,16 @@ idheads = ['sm', 'nm', 'nl', 'so']
 
 def folderscan_prompt(option):
     print('フォルダパスを入力して下さい')
-    while 1:
-        a = input()
 
-        if (os.path.exists(a)):
-            break
-        else:
-            print("フォルダが存在しません")
+    a = input()
 
-    folderscan_main(a, option)
+    if (os.path.exists(a)):
+        folderscan_main(a, option)
+    else:
+        print('-' * 55)
+        print("フォルダが存在しません")
+        for i in range(5):
+            print()
 
 def folderscan_main(p, option):
     a = glob.glob(str(Path(p) / "*"))
