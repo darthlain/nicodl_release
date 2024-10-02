@@ -156,7 +156,10 @@ def download(option):
 
 def make_urls(url):
     if ('nicovideo.jp/watch' in url):
-        return [url[0:url.index('?')]]
+        if '?' in url:
+            return [url[0:url.index('?')]]
+        else:
+            return [url]
     elif 'nicovideo.jp/series' in url:
         return fetch_niconico_series_official_ids(url)
     elif 'series' in url:

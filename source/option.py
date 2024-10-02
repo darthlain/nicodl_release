@@ -2,7 +2,7 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2024-09-30'
+version = '2024-10-03'
 
 yt_dlp = 'yt-dlp'
 
