@@ -2,9 +2,9 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2024-10-03'
+version = '2024-11-20'
 
-yt_dlp = 'yt-dlp'
+yt_dlp = 'yt-dlp --no-mtime'
 
 if debug:
     user_session_path = 'F:/download/nicodl_user_session.txt'

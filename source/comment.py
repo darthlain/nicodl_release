@@ -463,7 +463,7 @@ class CommentDL:
                 a = self.fetch_all_comment_fork(i, comments, vp)
 
                 if a == False:
-                    print('%s 失敗' % url)
+                    print('%s 失敗1' % url)
                     return
 
                 if lst[-1] != i:
@@ -472,10 +472,10 @@ class CommentDL:
             return comments
 
         else:
-            a = fetch_comment(self.session, is_owner, is_main, is_easy, vp.key, None)
+            a = fetch_comment(self.session, vp.id_owner, vp.id_main, vp.id_easy, vp.key, None)
 
             if a == False:
-                print('%s 失敗' % url)
+                print('%s 失敗2' % url)
                 return
 
             comments.add(a)
@@ -489,4 +489,7 @@ class CommentDL:
         return self.comment_dl(url, True, True, is_easy, is_kakolog)
 
 if __name__ == '__main__':
+    #a = CommentDL(make_option())
+    #a.set_user_session(a.option['user_session'])
+    #b = a.comment_dl_from_option('https://www.nicovideo.jp/watch/sm9')
     pass
