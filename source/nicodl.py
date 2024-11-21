@@ -7,26 +7,28 @@ from utility import *
 commentDL = None
 option = None
 
-def main():
+def main(is_init = True):
     global commentDL, option
 
     try:
-        commentDL = CommentDL(make_option())
+        if is_init:
+            commentDL = CommentDL(make_option())
 
-        option = commentDL.option
+            option = commentDL.option
 
-        if option['user_session']:
-            commentDL.set_user_session(option['user_session'])
+            if option['user_session']:
+                commentDL.set_user_session(option['user_session'])
 
-        version_show()
-        print()
-        option_show_safe(commentDL.option)
-
-        if debug:
+            version_show()
             print()
-            print("*警告* デバッグモード")
+            option_show_safe(commentDL.option)
 
-        os.chdir(str(option['dl_dir']))
+            if debug:
+                print()
+                print("*警告* デバッグモード")
+
+            os.chdir(str(option['dl_dir']))
+
         download(option);
 
         if option['end_presswait']:
@@ -84,30 +86,42 @@ def download(option):
     while 1:
         print()
         print('[a] (動画コメント)ダウンロード')
-        print('[z] (動画コメント)ダウンロード クリップボード監視')
+        #print('[z] (動画コメント)ダウンロード クリップボード監視')
         print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
         print()
-        print('[d] 動画DL:     %s' % ['☓', '○'][int(option['is_video'])])
-        print('[c] コメントDL: %s' % ['☓', '○'][int(option['is_comment'])])
+        print('[h] 動画DL:     %s' % ['☓', '○'][int(option['is_video'])])
+        print('[t] コメントDL: %s' % ['☓', '○'][int(option['is_comment'])])
+        print('[j] 過去ログDL: %s' % ['☓', '○'][int(option['is_kakolog'])])
+        print('[p] 簡単コメDL: %s' % ['☓', '○'][int(option['is_kantan'])])
         print()
-        print('[r] comment_mail, comment_passを使ってログイン')
         print('[q] ログイン状態確認')
+        print('[r] comment_mail, comment_passを使ってログイン')
         print('[0] 終了')
         key = getch()
 
         if (key == b'a'):
             download_douga_prompt(option)
-        elif (key == b'z'):
-            download_douga_clipboard_prompt(option)
+        #elif (key == b'z'):
+        #    download_douga_clipboard_prompt(option)
         elif (key == b's'):
             folderscan_prompt(option)
-        elif (key == b'd'):
+        elif (key == b'h'):
             option['is_video'] = option['is_video'] == False
             for i in range(5):
                 print()
             print('-------------------------------------------------------')
-        elif (key == b'c'):
+        elif (key == b't'):
             option['is_comment'] = option['is_comment'] == False
+            for i in range(5):
+                print()
+            print('-------------------------------------------------------')
+        elif key == b'j':
+            option['is_kakolog'] = option['is_kakolog'] == False
+            for i in range(5):
+                print()
+            print('-------------------------------------------------------')
+        elif key == b'p':
+            option['is_kantan'] = option['is_kantan'] == False
             for i in range(5):
                 print()
             print('-------------------------------------------------------')
@@ -157,32 +171,137 @@ def download(option):
 def make_urls(url):
     if ('nicovideo.jp/watch' in url):
         if '?' in url:
-            return [url[0:url.index('?')]]
+            a = [url[0:url.index('?')]]
         else:
-            return [url]
+            a = [url]
     elif 'nicovideo.jp/series' in url:
-        return fetch_niconico_series_official_ids(url)
+        a = fetch_niconico_series_official_ids(url)
     elif 'series' in url:
-        return fetch_niconico_series_ids(url)
+        a = fetch_niconico_series_ids(url)
     elif re.findall(r'user/\d+/mylist', url):
-        return fetch_nicozon_mylist_ids(url)
+        a = fetch_nicozon_mylist_ids(url)
     elif 'nicovideo.jp/mylist' in url:
-        return fetch_nicozon_mylist_ids(url)
+        a = fetch_nicozon_mylist_ids(url)
     else:
-        return fetch_nicozon_user_ids(url)
+        a = fetch_nicozon_user_ids(url)
+
+    b = []
+
+    # http:をhttps:に変換
+    for i in a:
+        if i[0:5] == 'http:':
+            b.append('https' + i[4:])
+        else:
+            b.append(i)
+
+    return b
 
 def download_douga_prompt(option):
     print()
     print('動画/投稿動画一覧/マイリスト/シリーズのURLを入力してください')
-    print('入力が終了したら nico と入力して下さい')
+    print('入力が終了したら以下のコマンドを入力してください')
+    print('クリップボードモード時は文字列をコピーしてください')
+    print()
+    print('DL実行: nico / メインに戻る: vid / クリップボードモード切り替え: eo')
+    print('動画DL: h / コメントDL: t / 過去ログDL: j 簡単コメDL: p')
     urls = []
+    clpmode = False
+    clpend = None
+
+    def f():
+        for i in range(5):
+            print()
+        print('-------------------------------------------------------')
+        print()
+        print('[h] 動画DL:     %s' % ['☓', '○'][int(option['is_video'])])
+        print('[t] コメントDL: %s' % ['☓', '○'][int(option['is_comment'])])
+        print('[j] 過去ログDL: %s' % ['☓', '○'][int(option['is_kakolog'])])
+        print('[p] 簡単コメDL: %s' % ['☓', '○'][int(option['is_kantan'])])
+        print()
+        print('DL実行: nico / メインに戻る: vid / クリップボードモード切り替え: eo')
+        print('動画DL: h / コメントDL: t / 過去ログDL: j 簡単コメDL: p')
+
     while 1:
-        print('> ', end = '')
-        url = input()
+        if clpmode:
+            url = 'eo'
+        else:
+            print('> ', end = '')
+            url = input()
 
         try:
             if url == 'nico':
                 break
+            elif url == 'vid':
+                for i in range(5):
+                    print()
+                print('-------------------------------------------------------')
+                main(is_init = False)
+                return
+            elif url == 'h':
+                option['is_video'] = option['is_video'] == False
+                f()
+
+            elif url == 't':
+                option['is_comment'] = option['is_comment'] == False
+                f()
+
+            elif url == 'j':
+                option['is_kakolog'] = option['is_kakolog'] == False
+                f()
+
+            elif url == 'p':
+                option['is_kantan'] = option['is_kantan'] == False
+                f()
+
+            elif url == 'eo':
+                if clpmode == False:
+                    print('クリップボードモード開始')
+                    clpmode = True
+
+                while 1:
+                    clp = pyperclip.waitForNewPaste()
+
+                    if clp == 'nico':
+                        clpend = 'nico'
+                        break
+                    elif clp == 'vid':
+                        for i in range(5):
+                            print()
+                        print('-------------------------------------------------------')
+                        main(is_init = False)
+                        return
+
+                    elif clp == 'h':
+                        option['is_video'] = option['is_video'] == False
+                        f()
+
+                    elif clp == 't':
+                        option['is_comment'] = option['is_comment'] == False
+                        f()
+
+                    elif clp == 'j':
+                        option['is_kakolog'] = option['is_kakolog'] == False
+                        f()
+
+                    elif clp == 'p':
+                        option['is_kantan'] = option['is_kantan'] == False
+                        f()
+                    
+                    elif clp == 'eo':
+                        print('クリップボードモード終了')
+                        clpend = 'eo'
+                        break
+                    else:
+                        urls += make_urls(clp)
+                        urls = list_remove_duplicates(urls)
+
+                        print('動画数: %d' % len(urls))
+
+                if clpend == 'eo':
+                    clpmode = False
+                    clpend = None
+                    continue
+
             else:
                 urls += make_urls(url)
         except:
@@ -190,6 +309,10 @@ def download_douga_prompt(option):
             print('入力ミスかも')
 
         urls = list_remove_duplicates(urls)
+
+        if debug:
+            for i in urls:
+                print(i)
         print('動画数: %d' % len(urls))
 
     download_douga_main(urls, option)
