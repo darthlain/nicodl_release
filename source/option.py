@@ -2,16 +2,16 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2024-11-22'
+version = '2024-11-29'
 
 yt_dlp = 'yt-dlp --no-mtime'
 
 if debug:
-    user_session_path = 'F:/download/nicodl_user_session.txt'
-    option_path = 'F:/download/nicodl_option.json'
+    # user_session_path = 'F:/etc/nicodl_debug/nicodl_user_session.txt'
+    option_path = 'F:/etc/nicodl_debug/nicodl_option.json'
 else:
-    user_session_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
-            "nicodl_user_session.txt")
+    # user_session_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
+    #         "nicodl_user_session.txt")
 
     option_path = os.path.join(Path(sys.argv[0]).parent.resolve(),
             "nicodl_option.json")
@@ -23,16 +23,16 @@ def read_option():
     else:
         return dict()
 
-def read_user_session():
-    if os.path.exists(user_session_path):
-        with open(user_session_path, encoding = 'utf-8') as f:
-            # print('nicodl_user_session.txtを読み込みました')
-            return f.read()[:-1]
+# def read_user_session():
+#     if os.path.exists(user_session_path):
+#         with open(user_session_path, encoding = 'utf-8') as f:
+#             # print('nicodl_user_session.txtを読み込みました')
+#             return f.read()[:-1]
 
-def write_user_session(a):
-    with open(user_session_path, 'w', encoding = 'utf-8') as f:
-        # print('nicodl_user_session.txtに書き込みました')
-        f.write(a)
+# def write_user_session(a):
+#     with open(user_session_path, 'w', encoding = 'utf-8') as f:
+#         # print('nicodl_user_session.txtに書き込みました')
+#         f.write(a)
 
 def json_str(d, key, default = ''):
     if not d.get(key):

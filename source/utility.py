@@ -6,9 +6,9 @@ def now_unixtime():
     return int(datetime.now(JST).timestamp())
 
 # デバッグ用
-def write0(a):
-    with open("F:/download/aaa.txt", "w", encoding = 'utf-8') as f:
-        f.write(str(a))
+# def write0(a):
+#     with open("F:/etc/nicodl_debug/a.txt", "w", encoding = 'utf-8') as f:
+#         f.write(str(a))
 
 # windowsの禁止文字を全角に直す
 # /は微妙扱い？だがめんどいので置換してしまうことにする
