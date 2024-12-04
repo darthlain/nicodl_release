@@ -301,6 +301,8 @@ def download_douga_prompt(option):
                     clpmode = False
                     clpend = None
                     continue
+                elif clpend == 'nico':
+                    break
 
             else:
                 urls += make_urls(url)
