@@ -1,7 +1,7 @@
 from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
-debug = True
+debug = False
 version = '2024-12-04_2'
 
 yt_dlp = 'yt-dlp --no-mtime'
