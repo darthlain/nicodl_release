@@ -35,3 +35,11 @@ def list_remove_duplicates(lst):
             a.append(i)
 
     return a
+
+def pyperclip_info():
+    print()
+    print('pyperclipの最新バージョンではwaitForNewPasteは削除されているらしいです')
+    print('pyperclipのダウングレードのコマンドは↓')
+    print('pip install --force-reinstall -v pyperclip==1.8.2')
+    print()
+    print('クリップボードモードを終了します')

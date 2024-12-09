@@ -86,7 +86,6 @@ def download(option):
     while 1:
         print()
         print('[a] (動画コメント)ダウンロード')
-        #print('[z] (動画コメント)ダウンロード クリップボード監視')
         print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
         print()
         print('[h] 動画DL:     %s' % ['☓', '○'][int(option['is_video'])])
@@ -101,8 +100,6 @@ def download(option):
 
         if (key == b'a'):
             download_douga_prompt(option)
-        #elif (key == b'z'):
-        #    download_douga_clipboard_prompt(option)
         elif (key == b's'):
             folderscan_prompt(option)
         elif (key == b'h'):
@@ -259,7 +256,13 @@ def download_douga_prompt(option):
                     clpmode = True
 
                 while 1:
-                    clp = pyperclip.waitForNewPaste()
+                    try:
+                        clp = pyperclip.waitForNewPaste()
+                    except AttributeError:
+                        pyperclip_info()
+                        clpmode = False
+                        clpend = None
+                        break
 
                     if clp == 'nico':
                         clpend = 'nico'
@@ -315,29 +318,6 @@ def download_douga_prompt(option):
         if debug:
             for i in urls:
                 print(i)
-        print('動画数: %d' % len(urls))
-
-    download_douga_main(urls, option)
-
-def download_douga_clipboard_prompt(option):
-    print()
-    print('動画/投稿動画一覧/マイリスト/シリーズのURLをコピーしてください')
-    print('入力が終了したら nico という文字列をコピーしてください')
-    urls = []
-
-    while 1:
-        url = pyperclip.waitForNewPaste()
-
-        try:
-            if url == 'nico':
-                break
-            else:
-                urls += make_urls(url)
-        except:
-            traceback.print_exc()
-            print('入力ミスかも')
-
-        urls = list_remove_duplicates(urls)
         print('動画数: %d' % len(urls))
 
     download_douga_main(urls, option)

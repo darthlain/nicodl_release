@@ -373,6 +373,12 @@ class CommentDL:
         else:
             return False
 
+    def fetch_video_page(self, url):
+        return fetch_video_page(self.session, url)
+
+    def fetch_comment(self, *args):
+        return fetch_comment(self.session, *args)
+
     # nicodl_user_session.txtから読み取る
     def make_user_session_txt(self):
         a = read_user_session()
@@ -383,7 +389,7 @@ class CommentDL:
         return False
 
     # fork一つをすべてDLする 渡したcommentsに結果が返る
-    def fetch_all_comment_fork(self, i, comments, video_page):
+    def fetch_all_comment_fork(self, i, comments, video_page, url):
         vp = video_page
         miss = 0
 
@@ -406,7 +412,9 @@ class CommentDL:
             if a == False:
                 # なぜか原因不明だが稀にやたら400になる動画がある
                 # sessionを新しいのにしたら大丈夫になる user_sessionは変えなくても大丈夫だった
+                # 2024/12/09 sm43662224で必ず失敗する問題 vp作り直したら成功した
                 self.replace_session()
+                vp = self.fetch_video_page(url)
                 miss += 1
                 time.sleep(5)
 
@@ -460,7 +468,7 @@ class CommentDL:
                 lst.append(2)
 
             for i in lst:
-                a = self.fetch_all_comment_fork(i, comments, vp)
+                a = self.fetch_all_comment_fork(i, comments, vp, url)
 
                 if a == False:
                     print('%s 失敗1' % url)
@@ -492,4 +500,21 @@ if __name__ == '__main__':
     #a = CommentDL(make_option())
     #a.set_user_session(a.option['user_session'])
     #b = a.comment_dl_from_option('https://www.nicovideo.jp/watch/sm9')
+
+    a = CommentDL(make_option())
+    a.set_user_session(a.option['user_session'])
+    print(a.option['user_session'])
+    #vp = a.fetch_video_page('https://www.nicovideo.jp/watch/sm43662224')
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1733707138)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1733707143)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1723266301)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1714538193)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713763834)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713418439)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713282216)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713240089)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713194671)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713171266)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713133802)
+    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713129550)
     pass
