@@ -129,7 +129,30 @@ def fetch_niconico_series_ids(s):
         aa = niconico_series_s2url(s, page)
         a = fetch_soup(aa)
         b = a.body.find_all(id='js-initial-userpage-data')[0]
-        c  = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
+        c = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
+        # &quot;変換する関数作ったほうが良さそう
+        c2 = re.findall(r'(?<=&quot;id&quot;:&quot;)[a-zA-Z]+\d+', str(b))
+        c3 = c + c2
+        d = list_remove_duplicates(c3)
+        dd = ['https://www.nicovideo.jp/watch/' + i for i in d]
+        e = dict()
+        e['url'] = aa
+        e['ids'] = dd
+        return e;
+
+    return fetch_allpage(s, f, endfn = take_ids)
+
+def niconico_video_s2url(s, page = 1):
+    a = id2url(extract_id(s, 'user'), 'https://www.nicovideo.jp/user/')
+    b = a + f'/video?page={page}'
+    return b
+
+def fetch_niconico_series_ids(s):
+    def f(s, page = 1):
+        aa = niconico_video_s2url(s, page)
+        a = fetch_soup(aa)
+        b = a.body.find_all(id='js-initial-userpage-data')[0]
+        c = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
         # &quot;変換する関数作ったほうが良さそう
         c2 = re.findall(r'(?<=&quot;id&quot;:&quot;)[a-zA-Z]+\d+', str(b))
         c3 = c + c2
@@ -218,4 +241,6 @@ def main_prompt():
 
 if __name__ == '__main__':
     #main_prompt()
+    #a = fetch_niconico_series_ids('https://www.nicovideo.jp/user/64929118/video')
+    #print(len(a))
     pass

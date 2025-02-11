@@ -203,7 +203,8 @@ class Nicodl:
         elif 'nicovideo.jp/mylist' in url:
             a = fetch_nicozon_mylist_ids(url)
         else:
-            a = fetch_nicozon_user_ids(url)
+            #a = fetch_nicozon_user_ids(url)
+            a = fetch_niconico_series_ids(url)
     
         b = []
 
