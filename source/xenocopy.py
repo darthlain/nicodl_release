@@ -147,7 +147,7 @@ def niconico_video_s2url(s, page = 1):
     b = a + f'/video?page={page}'
     return b
 
-def fetch_niconico_series_ids(s):
+def fetch_niconico_user_ids(s):
     def f(s, page = 1):
         aa = niconico_video_s2url(s, page)
         a = fetch_soup(aa)

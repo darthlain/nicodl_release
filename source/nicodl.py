@@ -204,7 +204,7 @@ class Nicodl:
             a = fetch_nicozon_mylist_ids(url)
         else:
             #a = fetch_nicozon_user_ids(url)
-            a = fetch_niconico_series_ids(url)
+            a = fetch_niconico_user_ids(url)
     
         b = []
 
