@@ -2,9 +2,9 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2025-02-14'
+version = '2025-02-18'
 
-yt_dlp = 'yt-dlp --no-mtime'
+yt_dlp = 'yt-dlp --no-mtime --write-thumbnail'
 
 if debug:
     option_path = 'F:/etc/nicodl_debug/nicodl_option.json'
