@@ -164,8 +164,13 @@ class Nicodl:
             elif s == 'cp':
                 self.cbmode.toggle()
             else:
+                a = len(self.urls)
                 self.urls += self.make_urls(s)
+                b = len(self.urls)
                 self.urls = list_remove_duplicates(self.urls)
+                c = len(self.urls)
+                print(f'{b - a}件の動画が検出されました')
+                print(f'{c - a}件追加されました')
         except:
             if self.option['is_dl_prompt_err_msg']:
                 traceback.print_exc()
@@ -174,7 +179,7 @@ class Nicodl:
         if debug:
             for i in self.urls:
                 print(i)
-        print('動画数: %d' % len(self.urls))
+        # print('動画数: %d' % len(self.urls))
 
     def download_info(self):
         space_bar()
@@ -186,6 +191,7 @@ class Nicodl:
         print()
         print('DL実行: dl / メインに戻る: back / クリップボードモード切り替え: cp')
         print('動画DL: video / コメントDL: com / 過去ログDL: log / 簡単コメDL: easy')
+        print('動画数: %d' % len(self.urls))
 
     @staticmethod
     def make_urls(url):
@@ -218,16 +224,17 @@ class Nicodl:
         return b
 
     def download(self):
-        print()
-        print('動画/投稿動画一覧/マイリスト/シリーズのURLを入力してください')
-        print('入力が終了したら以下のコマンドを入力してください')
-        print('クリップボードモード時は文字列をコピーしてください')
-        print()
-        print('DL実行: dl / メインに戻る: back / クリップボードモード切り替え: cp')
-        print('動画DL: video / コメントDL: com / 過去ログDL: log / 簡単コメDL: easy')
+        #print()
+        #print('動画/投稿動画一覧/マイリスト/シリーズのURLを入力してください')
+        #print('入力が終了したら以下のコマンドを入力してください')
+        #print('クリップボードモード時は文字列をコピーしてください')
+        #print()
+        #print('DL実行: dl / メインに戻る: back / クリップボードモード切り替え: cp')
+        #print('動画DL: video / コメントDL: com / 過去ログDL: log / 簡単コメDL: easy')
         self.urls = []
 
         while 1:
+            self.download_info()
             print('> ', end = '')
 
             self.cbmode.lock = True
