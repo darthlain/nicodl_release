@@ -151,16 +151,16 @@ class Nicodl:
                 return
             elif s == 'video':
                 self.option['is_video'] = self.option['is_video'] == False
-                self.download_info()
+                #self.download_info()
             elif s == 'com':
                 self.option['is_comment'] = self.option['is_comment'] == False
-                self.download_info()
+                #self.download_info()
             elif s == 'log':
                 self.option['is_kakolog'] = self.option['is_kakolog'] == False
-                self.download_info()
+                #self.download_info()
             elif s == 'easy':
                 self.option['is_kantan'] = self.option['is_kantan'] == False
-                self.download_info()
+                #self.download_info()
             elif s == 'cp':
                 self.cbmode.toggle()
             else:
