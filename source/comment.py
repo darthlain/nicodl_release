@@ -38,7 +38,7 @@ def fetch_video_page(session, url):
     #print('[GET] %s' % url)
 
     if a.status_code != 200:
-        print('エラー: %sを読み込めませんでした' % url)
+        print('コメントDLエラー: %sを読み込めませんでした' % url)
         return False
 
     b = bs(a.text, "html.parser")
@@ -412,7 +412,7 @@ class CommentDL:
             if a == False:
                 # なぜか原因不明だが稀にやたら400になる動画がある
                 # sessionを新しいのにしたら大丈夫になる user_sessionは変えなくても大丈夫だった
-                # 2024/12/09 sm43662224で必ず失敗する問題 vp作り直したら成功した
+                # 2024/12/09 特定の動画で必ず失敗する問題 vp作り直したら成功した
                 self.replace_session()
                 vp = self.fetch_video_page(url)
                 miss += 1
@@ -504,17 +504,4 @@ if __name__ == '__main__':
     a = CommentDL(make_option())
     a.set_user_session(a.option['user_session'])
     print(a.option['user_session'])
-    #vp = a.fetch_video_page('https://www.nicovideo.jp/watch/sm43662224')
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1733707138)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1733707143)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1723266301)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1714538193)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713763834)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713418439)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713282216)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713240089)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713194671)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713171266)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713133802)
-    #b = a.fetch_comment(None, vp.id_main, None, vp.key, 1713129550)
     pass

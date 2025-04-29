@@ -32,34 +32,35 @@ class Nicodl:
             print('[a] (動画コメント)ダウンロード')
             print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
             print()
-            print('[h] 動画DL:     %s' % ['☓', '○'][int(self.option['is_video'])])
-            print('[t] コメントDL: %s' % ['☓', '○'][int(self.option['is_comment'])])
-            print('[j] 過去ログDL: %s' % ['☓', '○'][int(self.option['is_kakolog'])])
-            print('[p] 簡単コメDL: %s' % ['☓', '○'][int(self.option['is_kantan'])])
-            print()
+            # print('[z] 動画DL:     %s' % ['☓', '○'][int(self.option['is_video'])])
+            # print('[x] コメントDL: %s' % ['☓', '○'][int(self.option['is_comment'])])
+            # print('[c] 過去ログDL: %s' % ['☓', '○'][int(self.option['is_kakolog'])])
+            # print('[v] 簡単コメDL: %s' % ['☓', '○'][int(self.option['is_kantan'])])
+            # print()
             print('[q] ログイン状態確認')
-            print('[r] comment_mail, comment_passを使ってログイン')
+            print('[r] comment_mail, comment_passを使ってログイン(非推奨)')
             print('[0] 終了')
+            print()
+            print('> ', end = '')
+            key = input()
 
-            key = getch()
-
-            if (key == b'a'):
+            if (key == 'a'):
                 self.download()
-            elif (key == b's'):
+            elif (key == 's'):
                 self.folder_scan()
-            elif (key == b'h'):
-                self.option['is_video'] = self.option['is_video'] == False
-                space_bar()
-            elif (key == b't'):
-                self.option['is_comment'] = self.option['is_comment'] == False
-                space_bar()
-            elif key == b'j':
-                self.option['is_kakolog'] = self.option['is_kakolog'] == False
-                space_bar()
-            elif key == b'p':
-                self.option['is_kantan'] = self.option['is_kantan'] == False
-                space_bar()
-            elif (key == b'q'):
+            # elif (key == 'z'):
+            #     self.option['is_video'] = self.option['is_video'] == False
+            #     space_bar()
+            # elif (key == 'x'):
+            #     self.option['is_comment'] = self.option['is_comment'] == False
+            #     space_bar()
+            # elif key == 'c':
+            #     self.option['is_kakolog'] = self.option['is_kakolog'] == False
+            #     space_bar()
+            # elif key == 'v':
+            #     self.option['is_kantan'] = self.option['is_kantan'] == False
+            #     space_bar()
+            elif (key == 'q'):
                 try:
                     a = self.comdl.is_user_session2()
                 except:
@@ -77,7 +78,7 @@ class Nicodl:
 
                 space_bar()
 
-            elif (key == b'r'):
+            elif (key == 'r'):
                 a = self.comdl.make_user_session_login_option()
 
                 space_bar()
@@ -91,7 +92,7 @@ class Nicodl:
 
                 time.sleep(0.5)
 
-            elif (key == b'0'):
+            elif (key == '0'):
                 print('byebye')
                 return
             else:
@@ -105,7 +106,11 @@ class Nicodl:
 
             if (self.option['is_video']):
                 try:
-                    os.system(str(self.option['yt_dlp_path']) + ' ' + i)
+                    a = os.system(str(self.option['yt_dlp_path']) + ' ' + i)
+
+                    if a != 0:
+                        print('動画DL 標準出力エラー')
+                        raise Exception("")
                 except:
                     traceback.print_exc()
                     print('動画DL失敗 %s' % i)
@@ -131,7 +136,7 @@ class Nicodl:
         print()
         print('全部で%s件 終了' % len(self.urls))
         print()
-        list_remove_duplicates(failed)
+        failed = list_remove_duplicates(failed)
 
         print('失敗したURL: %d件' % len(failed))
 
@@ -143,25 +148,25 @@ class Nicodl:
     # 文字列を読み取ってなんらかのアクションを起こす
     def download_command(self, s):
         try:
-            if s == 'dl':
+            if s == 'a':
                 self.download_execute()
-            elif s == 'back':
+            elif s == 'b':
                 space_bar()
                 self.main()
                 return
-            elif s == 'video':
+            elif s == 'z':
                 self.option['is_video'] = self.option['is_video'] == False
                 #self.download_info()
-            elif s == 'com':
+            elif s == 'x':
                 self.option['is_comment'] = self.option['is_comment'] == False
                 #self.download_info()
-            elif s == 'log':
+            elif s == 'c':
                 self.option['is_kakolog'] = self.option['is_kakolog'] == False
                 #self.download_info()
-            elif s == 'easy':
+            elif s == 'v':
                 self.option['is_kantan'] = self.option['is_kantan'] == False
                 #self.download_info()
-            elif s == 'cp':
+            elif s == 'p':
                 self.cbmode.toggle()
             else:
                 a = len(self.urls)
@@ -189,8 +194,10 @@ class Nicodl:
         print('過去ログDL: %s' % ['☓', '○'][int(self.option['is_kakolog'])])
         print('簡単コメDL: %s' % ['☓', '○'][int(self.option['is_kantan'])])
         print()
-        print('DL実行: dl / メインに戻る: back / クリップボードモード切り替え: cp')
-        print('動画DL: video / コメントDL: com / 過去ログDL: log / 簡単コメDL: easy')
+        print('Clipboard:  %s' % ['☓', '◯'][self.cbmode.is_on])
+        print()
+        print('DL実行: a / メインに戻る: b / クリップボードモード切り替え: p')
+        print('動画DL: z / コメントDL: x / 過去ログDL: c / 簡単コメDL: v')
         print('動画数: %d' % len(self.urls))
 
     @staticmethod

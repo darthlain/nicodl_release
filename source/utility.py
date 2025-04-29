@@ -71,8 +71,11 @@ class ClipboardMode:
                 s = pyperclip.paste()
                 if self.s != s:
                     self.s = s;
+                    print()
                     self.nicodl.download_command(s)
+                    self.nicodl.download_info()
                     print('> ', end = '')
+                    sys.stdout.flush()
 
             time.sleep(0.5)
 

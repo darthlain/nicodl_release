@@ -2,7 +2,7 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2025-02-22_2'
+version = '2025-4-30'
 
 yt_dlp = 'yt-dlp --no-mtime --write-thumbnail'
 
