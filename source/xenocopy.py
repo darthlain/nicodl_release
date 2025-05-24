@@ -133,7 +133,8 @@ def fetch_niconico_series_ids(s):
         # &quot;変換する関数作ったほうが良さそう
         c2 = re.findall(r'(?<=&quot;id&quot;:&quot;)[a-zA-Z]+\d+', str(b))
         c3 = c + c2
-        d = list_remove_duplicates(c3)
+        d = list_remove_not_idheads(c3)
+        d = list_remove_duplicates(d)
         dd = ['https://www.nicovideo.jp/watch/' + i for i in d]
         e = dict()
         e['url'] = aa
@@ -156,7 +157,8 @@ def fetch_niconico_user_ids(s):
         # &quot;変換する関数作ったほうが良さそう
         c2 = re.findall(r'(?<=&quot;id&quot;:&quot;)[a-zA-Z]+\d+', str(b))
         c3 = c + c2
-        d = list_remove_duplicates(c3)
+        d = list_remove_not_idheads(c3)
+        d = list_remove_duplicates(d)
         dd = ['https://www.nicovideo.jp/watch/' + i for i in d]
         e = dict()
         e['url'] = aa

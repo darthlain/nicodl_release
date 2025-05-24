@@ -32,11 +32,6 @@ class Nicodl:
             print('[a] (動画コメント)ダウンロード')
             print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
             print()
-            # print('[z] 動画DL:     %s' % ['☓', '○'][int(self.option['is_video'])])
-            # print('[x] コメントDL: %s' % ['☓', '○'][int(self.option['is_comment'])])
-            # print('[c] 過去ログDL: %s' % ['☓', '○'][int(self.option['is_kakolog'])])
-            # print('[v] 簡単コメDL: %s' % ['☓', '○'][int(self.option['is_kantan'])])
-            # print()
             print('[q] ログイン状態確認')
             print('[r] comment_mail, comment_passを使ってログイン(非推奨)')
             print('[0] 終了')
@@ -48,18 +43,6 @@ class Nicodl:
                 self.download()
             elif (key == 's'):
                 self.folder_scan()
-            # elif (key == 'z'):
-            #     self.option['is_video'] = self.option['is_video'] == False
-            #     space_bar()
-            # elif (key == 'x'):
-            #     self.option['is_comment'] = self.option['is_comment'] == False
-            #     space_bar()
-            # elif key == 'c':
-            #     self.option['is_kakolog'] = self.option['is_kakolog'] == False
-            #     space_bar()
-            # elif key == 'v':
-            #     self.option['is_kantan'] = self.option['is_kantan'] == False
-            #     space_bar()
             elif (key == 'q'):
                 try:
                     a = self.comdl.is_user_session2()
@@ -146,32 +129,29 @@ class Nicodl:
         self.urls = []
 
     # 文字列を読み取ってなんらかのアクションを起こす
+    # Trueを返したらdownload()のループ終了
     def download_command(self, s):
         try:
             if s == 'a':
                 self.download_execute()
-            elif s == 'b':
+            elif s == '0':
                 space_bar()
-                self.main()
-                return
+                return True
             elif s == 'z':
                 self.option['is_video'] = self.option['is_video'] == False
-                #self.download_info()
             elif s == 'x':
                 self.option['is_comment'] = self.option['is_comment'] == False
-                #self.download_info()
             elif s == 'c':
                 self.option['is_kakolog'] = self.option['is_kakolog'] == False
-                #self.download_info()
             elif s == 'v':
                 self.option['is_kantan'] = self.option['is_kantan'] == False
-                #self.download_info()
             elif s == 'p':
                 self.cbmode.toggle()
             else:
                 a = len(self.urls)
                 self.urls += self.make_urls(s)
                 b = len(self.urls)
+                self.urls = list_remove_not_idheads(self.urls)
                 self.urls = list_remove_duplicates(self.urls)
                 c = len(self.urls)
                 print(f'{b - a}件の動画が検出されました')
@@ -179,6 +159,7 @@ class Nicodl:
         except:
             if self.option['is_dl_prompt_err_msg']:
                 traceback.print_exc()
+                print()
             print('エラー URLやコマンドを読み取れませんでした')
 
         if debug:
@@ -196,7 +177,7 @@ class Nicodl:
         print()
         print('Clipboard:  %s' % ['☓', '◯'][self.cbmode.is_on])
         print()
-        print('DL実行: a / メインに戻る: b / クリップボードモード切り替え: p')
+        print('DL実行: a / メインに戻る: 0 / クリップボードモード切り替え: p')
         print('動画DL: z / コメントDL: x / 過去ログDL: c / 簡単コメDL: v')
         print('動画数: %d' % len(self.urls))
 
@@ -231,13 +212,6 @@ class Nicodl:
         return b
 
     def download(self):
-        #print()
-        #print('動画/投稿動画一覧/マイリスト/シリーズのURLを入力してください')
-        #print('入力が終了したら以下のコマンドを入力してください')
-        #print('クリップボードモード時は文字列をコピーしてください')
-        #print()
-        #print('DL実行: dl / メインに戻る: back / クリップボードモード切り替え: cp')
-        #print('動画DL: video / コメントDL: com / 過去ログDL: log / 簡単コメDL: easy')
         self.urls = []
 
         while 1:
@@ -247,7 +221,8 @@ class Nicodl:
             self.cbmode.lock = True
             a = input()
             self.cbmode.lock = False
-            self.download_command(a)
+            if self.download_command(a) == True:
+                break
 
     def folder_scan(self):
         print('フォルダパスを入力して下さい')

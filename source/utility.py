@@ -7,11 +7,6 @@ JST = timezone(timedelta(hours=+9), 'JST')
 def now_unixtime():
     return int(datetime.now(JST).timestamp())
 
-# デバッグ用
-# def write0(a):
-#     with open("F:/etc/nicodl_debug/a.txt", "w", encoding = 'utf-8') as f:
-#         f.write(str(a))
-
 # windowsの禁止文字を全角に直す
 # /は微妙扱い？だがめんどいので置換してしまうことにする
 # (yt-dlpが/付きのファイルを作ってるのを見た)
@@ -35,6 +30,17 @@ def list_remove_duplicates(lst):
     for i in lst:
         if not i in a:
             a.append(i)
+
+    return a
+
+# リスト内のidheads + 数字を含んでない文字列を消す
+def list_remove_not_idheads(lst):
+    a = []
+
+    for i in lst:
+        for j in idheads:
+            if (len(re.findall(j + r"\d+", i)) != 0):
+                a.append(i)
 
     return a
 
