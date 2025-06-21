@@ -48,9 +48,13 @@ yt-dlp自身とこのソフトのコメントDL機構のログインは別です
 例1: yt-dlp --cookies-from-browser [使ってるブラウザの名前 firefox edge chromeあたり？]
 例2: yt-dlp --cookies [cookies.txtで検索]
 例3: yt-dlp -u [メールアドレス] -p [パスワード]
+これらのいずれかをオプションファイルのyt_dlp_pathに書いてください
 
 ログインしないといかがわしい動画や過去ログにアクセス出来ませんので注意
 ログインせずに過去ログ機能がONになってる場合 コメントDLは失敗します
+
+オプションはとりあえず
+dl_dir yt_dlp_path user_sessionだけが重要なのでこれだけ埋めてください
 
 # オプションファイルの例
 {
