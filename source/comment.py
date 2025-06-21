@@ -38,7 +38,7 @@ def fetch_video_page(session, url):
     #print('[GET] %s' % url)
 
     if a.status_code != 200:
-        print('コメントDLエラー: %sを読み込めませんでした' % url)
+        print(f'コメントDLエラー: {url}を読み込めませんでした(コード{a.status_code})')
         return False
 
     b = bs(a.text, "html.parser")
