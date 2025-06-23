@@ -4,7 +4,7 @@
 
 2025/06/21
 ・readme書き直し
-・ごくごく稀だが一部動画のコメントに使ってはいけない文字が紛れ込んでいるのかcommeonがクラッシュする問題があることを確認したが詳細不明
+・ごくごく稀(というか一回だけ)だが一部動画のコメントに使ってはいけない文字が紛れ込んでいるのかcommeonがクラッシュする問題があることを確認したが詳細不明
 
 2025/05/25
 ・リファクタリング
@@ -18,31 +18,27 @@
 ・動画DL時に標準出力エラーで失敗扱いに
 ・クリップボードモード時 読み込んだらinfoが出るように
 
-yt-dlpのログイン関係は--cookies-from-browser [使ってるブラウザの名前]がいいかも
-firefoxがなんかいいとか聞きました
-あとおすすめのオプション
---no-mtime 日付をDL時のものにする
---write-thumbnail サムネイルをDLする
-
 (以下省略)
+
 
 
 --------------------------------------------------------------------------------
 
-・設定方法やTIPS
+・設定
 オプションファイルはexeと同じ場所のnicodl_option.jsonです
 文字コードはutf-8です
 
-bool値はtrueかfalseでyes noの意味になります すべて小文字です
-(型は文字列型でもboolean型でもOKです)
+オプションはとりあえず
+dl_dir yt_dlp_path user_sessionだけが重要なのでこれだけ埋めてください
 
-user_sessionはnicovideo.jpページを開きログインした後F12を押してストレージやcookie等の欄にあると思いますが
-詳しくは [<ブラウザ名> F12 cookie] などで検索して下さい
+ログインしないとセンシティブ動画や過去ログにアクセス出来ませんので注意
+ログインせずに過去ログ機能がONになってる場合 コメントDLは失敗します
 
 ファイルパスの¥(バックスラッシュまたは円記号)は/(スラッシュ)かバックスラッシュ2つに変換してください
 jsonはバックスラッシュ1つだけだとエラーになります
 
-何も書かなければデフォルトの良さげな設定になります
+user_sessionはnicovideo.jpページを開きログインした後F12を押してストレージやcookie等の欄にあると思いますが
+詳しくは [<ブラウザ名> F12 cookie] などで検索して下さい
 
 yt-dlp自身とこのソフトのコメントDL機構のログインは別です
 例1: yt-dlp --cookies-from-browser [使ってるブラウザの名前 firefox edge chromeあたり？]
@@ -50,28 +46,36 @@ yt-dlp自身とこのソフトのコメントDL機構のログインは別です
 例3: yt-dlp -u [メールアドレス] -p [パスワード]
 これらのいずれかをオプションファイルのyt_dlp_pathに書いてください
 
-ログインしないといかがわしい動画や過去ログにアクセス出来ませんので注意
-ログインせずに過去ログ機能がONになってる場合 コメントDLは失敗します
+その他yt-dlpの自分が使ってるオプション
+--no-mtime 日時を動画投稿時ではなくDL投稿時にする たぶんこのほうが動画管理に便利
+--write-thumbnail サムネイルをダウンロードする
 
-オプションはとりあえず
-dl_dir yt_dlp_path user_sessionだけが重要なのでこれだけ埋めてください
+簡単なyt_dlp_pathの例
+"yt_dlp_path": "C:/tool/yt_dlp.exe --no-mtime --write-thumbnail --cookies-from-browser edge",
+
+何も書いてない場所はデフォルトの良さげな設定になります (起動時に確認できます)
+
+bool値はtrueかfalseでyes noの意味になります すべて小文字です
+(型は文字列型でもboolean型でもOKです)
 
 # オプションファイルの例
 {
-"dl_dir": "C:/nicovideo",            # 動画のダウンロードフォルダ
-"yt_dlp_path": "C:/tool/yt_dlp.exe", # yt-dlpの.exeへのパス yt-dlpのオプションもここに書いて下さい
-"comment_mail": "",                  # アカウントのメールアドレス 現在は非推奨でuser_sessionを使ってください
-"comment_pass": "",                  # アカウントのパスワード 現在は非推奨でuser_sessionを使ってください
-"user_session": "",                  # user_session ブラウザのcookieから抜いてください
-"is_video": "",                      # 動画をDLするかどうか bool
-"is_comment": "",                    # コメントをDLするかどうか (この設定はフォルダのファイルのIDを読み込むやつには適応されない) bool
-"is_kakolog": "true",                # 過去ログをDLするかどうか bool
-"is_kantan": "false",                # かんたんコメントをDLするかどうか bool
-"comment_fileformat": "*title* [*id*][*comment_num*コメ].xml", # コメントファイル名の書式
-"end_presswait": "true"              # 完了後にキー待ちをする bool
-"is_dl_prompt_err_msg": "false"      # URL入力の際に誤った入力をした場合の詳細なエラーメッセージを出すかどうか bool
+"dl_dir": "C:/nicovideo",                                        # 動画のダウンロードフォルダ
+"yt_dlp_path": "C:/tool/yt_dlp.exe [ここにオプション]",          # yt-dlpの.exeへのパス yt-dlpのオプションもここに書いて下さい
+"comment_mail": "",                                              # アカウントのメールアドレス 現在は非推奨でuser_sessionを使ってください
+"comment_pass": "",                                              # アカウントのパスワード 現在は非推奨でuser_sessionを使ってください
+"user_session": "",                                              # user_session ブラウザのcookieから抜いてください
+"is_video": "",                                                  # 動画をDLするかどうか bool
+"is_comment": "",                                                # コメントをDLするかどうか (この設定はフォルダのファイルのIDを読み込むやつには適応されない) bool
+"is_kakolog": "true",                                            # 過去ログをDLするかどうか bool
+"is_kantan": "false",                                            # かんたんコメントをDLするかどうか bool
+"comment_fileformat": "*title* [*id*][*comment_num*コメ].xml",   # コメントファイル名の書式
+"end_presswait": "true"                                          # 完了後にキー待ちをする bool
+"is_dl_prompt_err_msg": "false"                                  # URL入力の際に誤った入力をした場合の詳細なエラーメッセージを出すかどうか bool
 }
 
+
+・小ネタやら
 コメント数と実際に取得されてるコメントの数が合わない場合
 大抵は削除されたコメントがあるか(これが結構かなりの数ある)
 かんたんコメントを取得するかどうかが関係している可能性が高いです
@@ -79,9 +83,7 @@ dl_dir yt_dlp_path user_sessionだけが重要なのでこれだけ埋めてく�
 nicodlはyt-dlpを外からurlを渡して呼んでるだけです yt-dlpや動画DLのアルゴリズムとは何の関係もありません
 yt_dlp_pathにyt-dlpではない別のダウンロードアプリを書いても機能するかもしれません
 
-ファイルを削除するようなコードは書かないようにしているのでそこは大丈夫だと思います
-
-フォルダ内を[0コメ]と検索すればコメントを取れなかった動画がわかると思います
+ファイルを削除するようなコードは絶対に書かないようにしてます
 
 関係ないけどwindowsならeverythingというソフトおすすめです
 PCの全領域からファイルを検索できます
