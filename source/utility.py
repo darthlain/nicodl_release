@@ -178,7 +178,7 @@ def save_video_info(videoinfo, option):
             n += 1
             continue
         else:
-            with open(path, "w", encoding = 'utf-8') as f:
+            with open(path, "x", encoding = 'utf-8') as f:
                 print(path)
                 f.write(info_format_file(videoinfo))
                 break

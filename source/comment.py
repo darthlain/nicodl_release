@@ -146,7 +146,7 @@ def save_xml(comments, video_page, option):
         if os.path.exists(a):
             n += 1
         else:
-            with open(a, "w", encoding = 'utf-8') as f:
+            with open(a, "x", encoding = 'utf-8') as f:
                 print(a)
                 f.write(comments.xml(vp.video_id))
                 break

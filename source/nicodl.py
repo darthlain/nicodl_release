@@ -166,6 +166,8 @@ class Nicodl:
             elif s == 'u':
                 for i in self.urls:
                     print(i)
+            elif s == 'i':
+                self.url_file_write()
             else:
                 a = len(self.urls)
                 self.urls += self.make_urls(s)
@@ -199,7 +201,7 @@ class Nicodl:
         print()
         print('DL実行: a / メインに戻る: 0 / クリップボードモード切り替え: p')
         print('動画DL: z / コメントDL: x / 過去ログDL: c / 簡単コメDL: v / 動画情報DL: b')
-        print('フォルダ読み込み: t / ファイル読み込み y / リスト出力 u')
+        print('フォルダ読み込み: t / ファイル読み込み: y / リスト標準出力: u / リストファイル出力: i')
         print('動画数: %d' % len(self.urls))
 
     @staticmethod
@@ -294,6 +296,29 @@ class Nicodl:
                 ids += re.findall(i + r"\d+", f.read())
         self.urls += ["https://www.nicovideo.jp/watch/" + i for i in ids]
         self.urls = list_remove_duplicates(self.urls)
+
+    def url_file_write(self):
+        print('URLを書き込むファイルパスを入力してください')
+        print('>', end = '')
+
+        a = input()
+
+        if (os.path.exists(a)):
+            print('ファイルが既に存在しています')
+        else:
+            try:
+                with open(a, 'x', encoding='utf-8') as f:
+                    f.write(self.url_str())
+            except FileNotFoundError:
+                print('フォルダが存在しません')
+
+    def url_str(self):
+        s = ''
+        for i in range(len(self.urls)):
+            s += self.urls[i]
+            if i + 1 != self.urls:
+                s += '\n'
+        return s
 
     #def folderscan_execute(self, p):
     #    a = glob.glob(str(Path(p) / "*"))
