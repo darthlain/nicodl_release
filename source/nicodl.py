@@ -30,7 +30,6 @@ class Nicodl:
         while 1:
             print()
             print('[a] (動画コメント)ダウンロード')
-            print('[s] フォルダを読んでファイル名の動画idからコメントを取得')
             print()
             print('[q] ログイン状態確認')
             print('[r] comment_mail, comment_passを使ってログイン(非推奨)')
@@ -41,8 +40,6 @@ class Nicodl:
 
             if (key == 'a'):
                 self.download()
-            elif (key == 's'):
-                self.folder_scan()
             elif (key == 'q'):
                 try:
                     a = self.comdl.is_user_session2()
@@ -84,8 +81,11 @@ class Nicodl:
     # "dl"コマンド
     def download_execute(self):
         failed = []
+        n = 0
 
         for i in self.urls:
+            n += 1
+            print(f"({n}/{len(self.urls)})")
 
             if (self.option['is_video']):
                 try:
@@ -102,7 +102,8 @@ class Nicodl:
             if (self.option['is_comment']):
 
                 try:
-                    a = self.comdl.comment_dl_from_option(i)
+                    vp = fetch_video_page(self.comdl.session, i)
+                    a = self.comdl.comment_dl_from_option(i, vp)
 
                     if a:
                         a.save_xml()
@@ -112,6 +113,15 @@ class Nicodl:
                 except:
                     traceback.print_exc()
                     print('コメントDL失敗: %s' % i)
+
+            if self.option['is_videoinfo']:
+                try:
+                    info = fetch_video_info(i, self.comdl.session)
+                    save_video_info(info, self.option)
+                except:
+                    traceback.print_exc()
+                    print('動画情報DL失敗 %s' % i)
+                    failed.append(i)
 
             if (i != self.urls[-1]):
                 time.sleep(5)
@@ -145,8 +155,17 @@ class Nicodl:
                 self.option['is_kakolog'] = self.option['is_kakolog'] == False
             elif s == 'v':
                 self.option['is_kantan'] = self.option['is_kantan'] == False
+            elif s == 'b':
+                self.option['is_videoinfo'] = self.option['is_videoinfo'] == False
             elif s == 'p':
                 self.cbmode.toggle()
+            elif s == 't':
+                self.folder_scan()
+            elif s == 'y':
+                self.file_scan()
+            elif s == 'u':
+                for i in self.urls:
+                    print(i)
             else:
                 a = len(self.urls)
                 self.urls += self.make_urls(s)
@@ -174,11 +193,13 @@ class Nicodl:
         print('コメントDL: %s' % ['☓', '○'][int(self.option['is_comment'])])
         print('過去ログDL: %s' % ['☓', '○'][int(self.option['is_kakolog'])])
         print('簡単コメDL: %s' % ['☓', '○'][int(self.option['is_kantan'])])
+        print('動画情報DL: %s' % ['☓', '◯'][int(self.option['is_videoinfo'])])
         print()
         print('Clipboard:  %s' % ['☓', '◯'][self.cbmode.is_on])
         print()
         print('DL実行: a / メインに戻る: 0 / クリップボードモード切り替え: p')
-        print('動画DL: z / コメントDL: x / 過去ログDL: c / 簡単コメDL: v')
+        print('動画DL: z / コメントDL: x / 過去ログDL: c / 簡単コメDL: v / 動画情報DL: b')
+        print('フォルダ読み込み: t / ファイル読み込み y / リスト出力 u')
         print('動画数: %d' % len(self.urls))
 
     @staticmethod
@@ -231,7 +252,11 @@ class Nicodl:
         a = input()
 
         if (os.path.exists(a)):
-            self.folderscan_execute(a)
+            if (os.path.isdir(a)):
+                self.folderscan_execute(a)
+            else:
+                print("フォルダではありません")
+                space_bar()
         else:
             print("フォルダが存在しません")
             space_bar()
@@ -239,42 +264,76 @@ class Nicodl:
     def folderscan_execute(self, p):
         a = glob.glob(str(Path(p) / "*"))
         ids = []
-        failed = []
-
         for i in a:
             for j in idheads:
                 ids += re.findall(j + r"\d+", i)
 
-        urls = ["https://www.nicovideo.jp/watch/" + i for i in ids]
+        self.urls += ["https://www.nicovideo.jp/watch/" + i for i in ids]
+        self.urls = list_remove_duplicates(self.urls)
 
-        urls = list_remove_duplicates(urls)
+    def file_scan(self):
+        print('ファイルパスを入力してください')
+        print('> ', end = '')
 
-        print('動画数: %d' % len(urls))
+        a = input()
 
-        for i in urls:
+        if (os.path.exists(a)):
+            if (os.path.isfile):
+                self.file_scan_execute(a)
+            else:
+                print("ファイルではありません")
+                space_bar()
+        else:
+            print("ファイルが存在しません")
+            space_bar()
 
-            try:
-                a = self.comdl.comment_dl_from_option(i)
+    def file_scan_execute(self, p):
+        ids = []
+        with codecs.open(p, 'r', 'utf-8', 'ignore') as f:
+            for i in idheads:
+                ids += re.findall(i + r"\d+", f.read())
+        self.urls += ["https://www.nicovideo.jp/watch/" + i for i in ids]
+        self.urls = list_remove_duplicates(self.urls)
 
-                if a:
-                    a.save_xml()
-                else:
-                    failed.append(i)
+    #def folderscan_execute(self, p):
+    #    a = glob.glob(str(Path(p) / "*"))
+    #    ids = []
+    #    failed = []
 
-            except:
-                traceback.print_exc()
-                print('不明なエラー: %s' % i)
+    #    for i in a:
+    #        for j in idheads:
+    #            ids += re.findall(j + r"\d+", i)
+
+    #    urls = ["https://www.nicovideo.jp/watch/" + i for i in ids]
+
+    #    urls = list_remove_duplicates(urls)
+
+    #    print('動画数: %d' % len(urls))
+
+    #    for i in urls:
+
+    #        try:
+    #            a = self.comdl.comment_dl_from_option(i)
+
+    #            if a:
+    #                a.save_xml()
+    #            else:
+    #                failed.append(i)
+
+    #        except:
+    #            traceback.print_exc()
+    #            print('不明なエラー: %s' % i)
 
 
-            if (i != urls[-1]):
-                time.sleep(5)
+    #        if (i != urls[-1]):
+    #            time.sleep(5)
 
-        print('終了 動画数: %d' % len(urls))
+    #    print('終了 動画数: %d' % len(urls))
 
-        print()
-        print('失敗したURL: %d件' % len(failed))
-        for i in failed:
-            print(i)
+    #    print()
+    #    print('失敗したURL: %d件' % len(failed))
+    #    for i in failed:
+    #        print(i)
 
 if __name__ == '__main__':
     a = Nicodl();

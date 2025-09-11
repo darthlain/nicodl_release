@@ -24,6 +24,7 @@ from option  import *
 # なんかニコニコのサイトは"が&quot;になってしまうことがあるらしい？
 # どっちのケースもあるのが不思議
 
+# ↑(2025/09/11)html.unescape使うべきだったかも
 
 
 
@@ -443,16 +444,12 @@ class CommentDL:
 
     # 過去ログDLにはsessionに有効なuser_session cookieが適用されている必要がある
     # 返り値はコメントが読み込まれたComments
-    def comment_dl(self, url, is_owner, is_main, is_easy, is_kakolog):
+    def comment_dl(self, url, video_page, is_owner, is_main, is_easy, is_kakolog):
+        vp = video_page
 
         if is_kakolog and not self.is_user_session():
             print('エラー: user_sessionが設定されていません')
             return
-
-        vp = fetch_video_page(self.session, url)
-
-        if vp == False:
-            return False
 
         time.sleep(5)
         comments = Comments(vp, self.option)
@@ -490,11 +487,11 @@ class CommentDL:
             return comments
 
     # is_commentは考慮しない
-    def comment_dl_from_option(self, url):
+    def comment_dl_from_option(self, url, video_page):
         is_kakolog = self.option['is_kakolog']
         is_easy = self.option['is_kantan']
 
-        return self.comment_dl(url, True, True, is_easy, is_kakolog)
+        return self.comment_dl(url, video_page, True, True, is_easy, is_kakolog)
 
 if __name__ == '__main__':
     #a = CommentDL(make_option())

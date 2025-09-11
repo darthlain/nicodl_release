@@ -1,4 +1,4 @@
-import sys, os, re, time, random, json, shutil, traceback, glob, html, copy, threading
+import sys, os, re, time, random, json, shutil, traceback, glob, html, copy, threading, codecs
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
 # from msvcrt import getch
