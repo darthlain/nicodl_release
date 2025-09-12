@@ -120,11 +120,14 @@ def fetch_video_info(url, session):
     # ユーザーIDはch動画の場合はない
     try:
         info.ownerid = re.findall(r'(?<=nicovideo.jp\\/user\\/).*?(?="}})', aa)[0]
-        z = session.get("https://www.nicozon.net/myvideo/" + info.ownerid)
-        zz = html.escape(z.text)
-        info.username = re.findall(r'(?<=<title>).*?(?=さんの投稿動画)', zz)[0]
     except:
         info.ownerid = ''
+
+    try:
+        z = session.get("https://www.nicozon.net/myvideo/" + info.ownerid)
+        zz = html.unescape(z.text)
+        info.username = re.findall(r'(?<=<title>).*?(?=さんの投稿動画)', zz)[0]
+    except:
         info.username = ''
     return info
 
