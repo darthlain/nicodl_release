@@ -1,6 +1,8 @@
 from imports import *
 
 idheads = ['sm', 'nm', 'nl', 'so']
+maru = '○'
+batu = '☓'
 
 JST = timezone(timedelta(hours=+9), 'JST')
 
@@ -8,8 +10,8 @@ def now_unixtime():
     return int(datetime.now(JST).timestamp())
 
 # windowsの禁止文字を全角に直す
-# /は微妙扱い？だがめんどいので置換してしまうことにする
 # (yt-dlpが/付きのファイルを作ってるのを見た)
+# ↑ 2026-04-05 これはBig_Solidusとかいうのらしい
 def win_forbidden_name_replace(s):
     s = s.replace("\\", "￥")
     s = s.replace("/", "／")

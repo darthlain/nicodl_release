@@ -498,7 +498,7 @@ if __name__ == '__main__':
     #a.set_user_session(a.option['user_session'])
     #b = a.comment_dl_from_option('https://www.nicovideo.jp/watch/sm9')
 
-    a = CommentDL(make_option())
-    a.set_user_session(a.option['user_session'])
-    print(a.option['user_session'])
+    #a = CommentDL(make_option())
+    #a.set_user_session(a.option['user_session'])
+    #print(a.option['user_session'])
     pass
