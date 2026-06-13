@@ -316,7 +316,7 @@ class Nicodl:
     #            print('フォルダが存在しません')
 
     def url_clipboard_write(self):
-        pyperclip.copy(self.url_str()[0:-1])
+        pyperclip.copy(self.url_str())
 
     def url_str(self):
         s = ''
