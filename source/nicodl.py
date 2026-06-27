@@ -300,21 +300,6 @@ class Nicodl:
         self.urls += ["https://www.nicovideo.jp/watch/" + i for i in ids]
         self.urls = list_remove_duplicates(self.urls)
 
-    #def url_file_write(self):
-    #    print('URLを書き込むファイルパスを入力してください')
-    #    print('>', end = '')
-
-    #    a = input()
-
-    #    if (os.path.exists(a)):
-    #        print('ファイルが既に存在しています')
-    #    else:
-    #        try:
-    #            with open(a, 'x', encoding='utf-8') as f:
-    #                f.write(self.url_str())
-    #        except FileNotFoundError:
-    #            print('フォルダが存在しません')
-
     def url_clipboard_write(self):
         pyperclip.copy(self.url_str())
 
@@ -325,46 +310,6 @@ class Nicodl:
             if i + 1 != self.urls:
                 s += '\n'
         return s
-
-    #def folderscan_execute(self, p):
-    #    a = glob.glob(str(Path(p) / "*"))
-    #    ids = []
-    #    failed = []
-
-    #    for i in a:
-    #        for j in idheads:
-    #            ids += re.findall(j + r"\d+", i)
-
-    #    urls = ["https://www.nicovideo.jp/watch/" + i for i in ids]
-
-    #    urls = list_remove_duplicates(urls)
-
-    #    print('動画数: %d' % len(urls))
-
-    #    for i in urls:
-
-    #        try:
-    #            a = self.comdl.comment_dl_from_option(i)
-
-    #            if a:
-    #                a.save_xml()
-    #            else:
-    #                failed.append(i)
-
-    #        except:
-    #            traceback.print_exc()
-    #            print('不明なエラー: %s' % i)
-
-
-    #        if (i != urls[-1]):
-    #            time.sleep(5)
-
-    #    print('終了 動画数: %d' % len(urls))
-
-    #    print()
-    #    print('失敗したURL: %d件' % len(failed))
-    #    for i in failed:
-    #        print(i)
 
 if __name__ == '__main__':
     a = Nicodl();

@@ -1,6 +1,6 @@
 from imports import *
 
-idheads = ['sm', 'nm', 'nl', 'so']
+idheads = ['sm', 'nm', 'nl', 'so', 'ss']
 maru = '○'
 batu = '☓'
 
@@ -126,9 +126,15 @@ def fetch_video_info(url, session):
         info.ownerid = ''
 
     try:
-        z = session.get("https://www.nicozon.net/myvideo/" + info.ownerid)
-        zz = html.unescape(z.text)
-        info.username = re.findall(r'(?<=<title>).*?(?=さんの投稿動画)', zz)[0]
+        # できなくなったかも
+        #z = session.get("https://www.nicozon.net/myvideo/" + info.ownerid)
+        #zz = html.unescape(z.text)
+        #info.username = re.findall(r'(?<=<title>).*?(?=さんの投稿動画)', zz)[0]
+        
+        z = session.get("https://nicochart.jp/user/" + info.ownerid)
+        zz = bs(z.text, 'html.parser')
+        zzz = zz.find('ul', class_='video-list').find_all('li', class_='video-info')[0].find('li', class_='contributor').find('em', class_='name').text
+        info.username = zzz
     except:
         info.username = ''
     return info

@@ -496,9 +496,6 @@ class CommentDL:
 if __name__ == '__main__':
     #a = CommentDL(make_option())
     #a.set_user_session(a.option['user_session'])
-    #b = a.comment_dl_from_option('https://www.nicovideo.jp/watch/sm9')
-
-    #a = CommentDL(make_option())
-    #a.set_user_session(a.option['user_session'])
-    #print(a.option['user_session'])
+    #b = a.comment_dl('https://www.nicovideo.jp/shorts/ss46409474', a.fetch_video_page('https://www.nicovideo.jp/shorts/ss46409474'), False, True, True, False)
+    #print(b.comments)
     pass
