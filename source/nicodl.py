@@ -214,6 +214,12 @@ class Nicodl:
                 a = [url[0:url.index('?')]]
             else:
                 a = [url]
+        elif ('nicovideo.jp/shorts' in url):
+            url = url.replace('shorts', 'watch')
+            if '?' in url:
+                a = [url[0:url.index('?')]]
+            else:
+                a = [url]
         elif 'nicovideo.jp/series' in url:
             a = fetch_niconico_series_official_ids(url)
         elif 'series' in url:
