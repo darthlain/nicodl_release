@@ -139,7 +139,7 @@ class Nicodl:
         for i in failed:
             print(i)
 
-        self.urls = []
+        #self.urls = []
 
     # 文字列を読み取ってなんらかのアクションを起こす
     # Trueを返したらdownload()のループ終了
@@ -150,6 +150,8 @@ class Nicodl:
             elif s == '0':
                 space_bar()
                 return True
+            elif s == 'k':
+                self.urls = []
             elif s == 'z':
                 self.option['is_video'] = self.option['is_video'] == False
             elif s == 'x':
@@ -202,7 +204,7 @@ class Nicodl:
         print()
         print('Clipboard:  %s' % [batu, maru][self.cbmode.is_on])
         print()
-        print('DL実行: a / メインに戻る: 0 / クリップモードトグル: p')
+        print('DL実行: a / リストクリア: k / メインに戻る: 0 / クリップモードトグル: p')
         print('トグル→ 動画: z / コメントDL: x / 過去ログDL: c / 簡単コメDL: v / 動画情報DL: b')
         print('フォルダ読み込み: t / ファイル読み込み: y / リストprint: u / リストクリップ出力: i')
         print('動画数: %d' % len(self.urls))
@@ -244,7 +246,7 @@ class Nicodl:
         return b
 
     def download(self):
-        self.urls = []
+        #self.urls = []
 
         while 1:
             self.download_info()
