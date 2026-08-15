@@ -139,7 +139,8 @@ class Nicodl:
         for i in failed:
             print(i)
 
-        #self.urls = []
+        if not self.option['is_download_finish_list_clear']:
+            self.urls = []
 
     # 文字列を読み取ってなんらかのアクションを起こす
     # Trueを返したらdownload()のループ終了

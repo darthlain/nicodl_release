@@ -11,5 +11,6 @@
 "is_videoinfo": "",
 "comment_fileformat": "",
 "end_presswait": "",
-"is_dl_prompt_err_msg": ""
+"is_dl_prompt_err_msg": "",
+"is_download_finish_list_clear": ""
 }

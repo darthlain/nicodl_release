@@ -2,7 +2,7 @@ from imports import *
 
 # デバッグモード 普段使用時にtrueになってはいけない
 debug = False
-version = '2026-08-09'
+version = '2026-08-16'
 
 yt_dlp = 'yt-dlp --no-mtime --write-thumbnail'
 
@@ -66,6 +66,7 @@ def make_option():
     json_str(a, 'comment_fileformat', "*title* [*id*][*comment_num*コメ].xml")
     json_bool(a, 'end_presswait', True)
     json_bool(a, 'is_dl_prompt_err_msg', False)
+    json_bool(a, 'is_download_finish_list_clear', False)
 
     return a
 
