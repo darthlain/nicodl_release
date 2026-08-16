@@ -139,7 +139,7 @@ class Nicodl:
         for i in failed:
             print(i)
 
-        if not self.option['is_download_finish_list_clear']:
+        if not self.option['is_download_finish_list_not_clear']:
             self.urls = []
 
     # 文字列を読み取ってなんらかのアクションを起こす

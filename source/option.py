@@ -66,7 +66,7 @@ def make_option():
     json_str(a, 'comment_fileformat', "*title* [*id*][*comment_num*コメ].xml")
     json_bool(a, 'end_presswait', True)
     json_bool(a, 'is_dl_prompt_err_msg', False)
-    json_bool(a, 'is_download_finish_list_clear', False)
+    json_bool(a, 'is_download_finish_list_not_clear', False)
 
     return a
 
