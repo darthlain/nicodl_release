@@ -227,13 +227,16 @@ class Nicodl:
             a = fetch_niconico_series_official_ids(url)
         elif 'series' in url:
             a = fetch_niconico_series_ids(url)
+        #elif re.findall(r'user/\d+/shorts', url):
+        #    a = fetch_niconico_user_shorts_ids(url)
         elif re.findall(r'user/\d+/mylist', url):
-            a = fetch_nicozon_mylist_ids(url)
+            a = fetch_niconico_user_mylist_ids(url)
         elif 'nicovideo.jp/mylist' in url:
-            a = fetch_nicozon_mylist_ids(url)
+            a = fetch_niconico_user_mylist_ids(url)
         else:
-            #a = fetch_nicozon_user_ids(url)
+            # ユーザー動画+ショート全DL
             a = fetch_niconico_user_ids(url)
+            a += fetch_niconico_user_shorts_ids(url)
     
         b = []
 

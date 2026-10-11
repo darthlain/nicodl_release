@@ -1,3 +1,6 @@
+
+# このファイルは昔作ったxenocopyというツールです
+
 from imports import *
 from utility import *
 
@@ -22,10 +25,15 @@ def id2url(num, before, after = ''):
     return before + str(num) + after
 
 # requests.getでhtmlを取る
-def fetch_soup(url):
-    text = requests.get(url).text
-    soup = bs(text, 'html.parser')
-    return soup
+def fetch_soup(url, session = None):
+    if session == None:
+        text = requests.get(url).text
+        soup = bs(text, 'html.parser')
+        return soup
+    else:
+        text = session.get(url).text
+        soup = bs(text, 'html.parser')
+        return soup
 
 # 複数のIDをクリップボードにコピー
 def copy_ids(video_ids):
@@ -167,6 +175,71 @@ def fetch_niconico_user_ids(s):
 
     return fetch_allpage(s, f, endfn = take_ids)
 
+
+# nicovideo.jpからマイリスト
+def niconico_user_mylist_s2url(s, page = 1):
+    # 使わない
+    a = extract_id(s, 'user')
+    b = extract_id(s, 'mylist')
+    return f'https://www.nicovideo.jp/user/{a}/mylist/{b}?page={page}'
+
+# nicovideo.jp api使用
+def fetch_niconico_user_mylist_ids(s):
+    mylist = extract_id(s, 'mylist')
+    url = f"https://nvapi.nicovideo.jp/v2/mylists/{mylist}"
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "X-Frontend-Id": "6",
+        "X-Frontend-Version": "0",
+        "Referer": f"https://www.nicovideo.jp/mylist/{mylist}",
+    }
+    acc = []
+    page = 1
+
+    while 1:
+        a = requests.get(url, params={"page":page, "pageSize":100},
+                         headers=headers)
+        b = json.loads(a.text)
+        c = b['data']['mylist']['items']
+        if len(c) == 0:
+            break
+        for i in c:
+            if i['status'] == 'deleted' or i['status'] == 'hidden':
+                continue
+            acc.append(f'https:/nicovideo.jp/watch/{i['watchId']}')
+        page += 1
+    return acc
+
+# ショートのみ
+def niconico_user_shorts_s2url(s, page = 1):
+    a = id2url(extract_id(s, 'user'), 'https://www.nicovideo.jp/user/')
+    b = a + f'/shorts?page={page}'
+    return b
+
+def fetch_niconico_user_shorts_ids(s):
+    page = 1
+    acc = []
+
+    while 1:
+        a = niconico_user_shorts_s2url(s, page = page)
+        b = fetch_soup(a)
+        c = b.select_one("[data-initial-data]")
+        d = json.loads(c["data-initial-data"])
+        e = d["nvapi"][0]["body"]["data"]["items"]
+
+        if len(e) == 0:
+            break
+        else:
+            for i in e:
+                id_ = i["essential"]["id"]
+                g = f'https://www.nicovideo.jp/watch/{id_}'
+                acc.append(g)
+        print(f"[user_shorts] {len(e)}件のURL取得")
+        page += 1
+
+    return acc
+
+
 # 公式動画のシリーズ
 def niconico_series_official_s2url(s):
     return id2url(extract_id(s, 'series'), 'https://www.nicovideo.jp/series/')
@@ -176,7 +249,6 @@ def fetch_niconico_series_official_ids(s):
     form = r'(?<= href=").*(?=" rel=")'
 
     aa = niconico_series_official_s2url(s)
-    print(aa)
     a = fetch_soup(aa)
     b = a.body.find_all(class_=class_)
     acc = []
@@ -189,6 +261,7 @@ def fetch_niconico_series_official_ids(s):
 #
 
 
+# ここから下は以前のコードの名残で使わない
 
 def fetch_prompt(fetch, printstr):
     print(printstr)
@@ -245,4 +318,7 @@ if __name__ == '__main__':
     #main_prompt()
     #a = fetch_niconico_series_ids('https://www.nicovideo.jp/user/64929118/video')
     #print(len(a))
+    #print(len(niconico_user_shorts_ids("https://www.nicovideo.jp/user/143678982/shorts")))
+    #print(len(json.loads(r.text)['data']['mylist']['items']))
+    print(fetch_niconico_user_mylist_ids("https://www.nicovideo.jp/user/16124335/mylist/53513305?ref=pc_userpage_mylist"))
     pass
