@@ -1,7 +1,7 @@
-import sys, os, re, time, random, json, shutil, traceback, glob, html, copy, threading, codecs
+import sys, os, re, time, random, json, shutil, traceback, glob, html
+import copy, threading, codecs
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
-# from msvcrt import getch
 from pathlib import Path
 from xml.sax import saxutils
 

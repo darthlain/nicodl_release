@@ -1,6 +1,3 @@
-
-# このファイルは昔作ったxenocopyというツールです
-
 from imports import *
 from utility import *
 
@@ -139,6 +136,7 @@ def fetch_niconico_series_ids(s):
         b = a.body.find_all(id='js-initial-userpage-data')[0]
         c = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
         # &quot;変換する関数作ったほうが良さそう
+        # ↑html.unescape?
         c2 = re.findall(r'(?<=&quot;id&quot;:&quot;)[a-zA-Z]+\d+', str(b))
         c3 = c + c2
         d = list_remove_not_idheads(c3)
@@ -163,6 +161,7 @@ def fetch_niconico_user_ids(s):
         b = a.body.find_all(id='js-initial-userpage-data')[0]
         c = re.findall(r'(?<="id":")[a-zA-Z]+\d+', str(b))
         # &quot;変換する関数作ったほうが良さそう
+        # ↑html.unescape?
         c2 = re.findall(r'(?<=&quot;id&quot;:&quot;)[a-zA-Z]+\d+', str(b))
         c3 = c + c2
         d = list_remove_not_idheads(c3)
@@ -195,6 +194,8 @@ def fetch_niconico_user_mylist_ids(s):
     }
     acc = []
     page = 1
+    count_a = 0
+    count_b = 0
 
     while 1:
         a = requests.get(url, params={"page":page, "pageSize":100},
@@ -205,9 +206,13 @@ def fetch_niconico_user_mylist_ids(s):
             break
         for i in c:
             if i['status'] == 'deleted' or i['status'] == 'hidden':
+                count_b += 1
                 continue
             acc.append(f'https:/nicovideo.jp/watch/{i['watchId']}')
+            count_a += 1
         page += 1
+        time.sleep(0.5)
+    print(f'[mylist] {count_a + count_b}件検出, {count_a}件追加, {count_b}件削除または非公開')
     return acc
 
 # ショートのみ
@@ -236,6 +241,7 @@ def fetch_niconico_user_shorts_ids(s):
                 acc.append(g)
         print(f"[user_shorts] {len(e)}件のURL取得")
         page += 1
+        time.sleep(0.5)
 
     return acc
 
